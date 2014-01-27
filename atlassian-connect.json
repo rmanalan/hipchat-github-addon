@@ -1,0 +1,32 @@
+{
+    "key": "github-for-hipchat",
+    "name": "GitHub",
+    "description": "Bring GitHub into your HipChat rooms and get notified about your team's commits, pull requests, issues, comments, and more.",
+    "vendor": {
+        "name": "HipChat",
+        "url": "https://www.hipchat.com"
+    },
+    "links": {
+        "self": "{{localBaseUrl}}/atlassian-connect.json",
+        "homepage": "{{localBaseUrl}}/atlassian-connect.json"
+    },
+    "capabilities": {
+        "hipchatApiConsumer": {
+            "scopes": [
+                "send_notification"
+            ]
+        },
+        "installable": {
+            "callbackUrl": "{{localBaseUrl}}/installable"
+        },
+        "configurable": {
+             "url": "{{localBaseUrl}}/config"
+        },
+        "webhook": {
+            "url": "{{localBaseUrl}}/webhook",
+            "pattern": "/gh",
+            "event": "room_message",
+            "name": "GitHub command"
+        }
+    }
+}
