@@ -32,70 +32,46 @@ module.exports = function (app, addon) {
   app.post('/webhook',
     addon.authenticate(),
     function(req, res) {
-
-      // TODO convert this to middleware
-      addon.loadClientInfo(req.body.oauth_client_id).then(
-        function(clientInfo) {
-          if (clientInfo == null) {
-            res.send(204);
-            return;
-          }
-          var hipchatUrl = clientInfo.capabilitiesDoc.links['api'];
-          addon.getAccessToken(clientInfo).then(
-            function(token) {
-              http.post(hipchatUrl + '/room/'+req.context.item.room.id+'/notification?auth_token=' + token.access_token,{
-                "body": {
-                  "message": "pong"
-                },
-                "json": true
-              });
-              res.send(200);
-            }, function(err) {
-              console.log("Unable to get access token: ", err);
-              res.send(500, err);
-            }
-          )
-        }, function(err) {
-          res.send(500, err);
-        }
-      );
+      addon.getAccessToken(req.clientInfo).then(function(token){
+        var hipchatBaseUrl = req.clientInfo.capabilitiesDoc.links['api'];
+        var msgUrl = hipchatBaseUrl + '/room/'+req.context.item.room.id+'/notification?auth_token=' + token.access_token;
+        console.log(msgUrl);
+        http.post({
+          'url': msgUrl,
+          'body': {
+            'message': 'pong'
+          },
+          "json": true
+        }, function(err, resp, body){
+          console.log('msg sent')
+          res.send(200);
+        });
+      });
     }
   );
 
   // Add-on lifecycle events handlers... if you need them
 
-  // addon.on('installed', function(id, tokenObj, ctx){
-  //   console.log(2, ctx);
-    // addon.loadClientInfo(tokenObj.clientKey).then(
-    //   function(clientInfo) {
-    //     if (clientInfo == null) {
-    //       res.send(204);
-    //       return;
-    //     }
-    //     var hipchatUrl = clientInfo.capabilitiesDoc.links['api'];
-    //     addon.getAccessToken(clientInfo).then(
-    //       function(token) {
-    //         console.log(7,token);
-    //         http.post(hipchatUrl + '/room/'+ctx.roomId+'/notification?auth_token=' + token.access_token,{
-    //           "body": {
-    //             "message": "so and so installed your addon"
-    //           },
-    //           "json": true
-    //         }, function(err, res){
-    //           console.log(6, arguments)
-    //         });
-    //         // res.send(200);
-    //       }, function(err) {
-    //         console.log("Unable to get access token: ", err);
-    //         // res.send(500, err);
-    //       }
-    //     )
-    //   }, function(err) {
-    //     // res.send(500, err);
-    //   }
-    // );
+  addon.on('installed', function(clientKey, clientInfo, req){
+    var hipchatUrl = clientInfo.capabilitiesDoc.links['api'];
+    addon.getAccessToken(clientInfo).then(
+      function(token) {
+        http.post(hipchatUrl + '/room/'+req.body.roomId+'/notification?auth_token=' + token.access_token,{
+          "body": {
+            "message": "The GitHub add-on has been installed in this room"
+          },
+          "json": true
+        }, function(err, res){
+          if (err){
+            addon.logger.error('Error sending message to HipChat', err);
+          }
+        });
+      }, function(err) {
+        addon.logger.error("Unable to get access token: ", err);
+      }
+    )
 
-  // });
+  });
 
   // addon.on('uninstalled', function(id){
   //   ...do something

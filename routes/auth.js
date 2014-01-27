@@ -8,6 +8,13 @@ module.exports = function (app, addon, passport) {
   app.get('/auth/github/callback',
     passport.authenticate('github', { failureRedirect: '/auth' }),
     function(req, res){
+      // Here's what's going on here:
+      //
+      // * We get the jwt from the referer header so we can get the
+      //   clientId. We're doing it this way because we're not using sessions
+      // * Once we have the clientId, we can fetch the clientInfo from Redis
+      // * We then augment the clientInfo in Redis with the GitHub userid
+      //   and accessToken
       var referer = req.headers['referer'];
       var signedRequest = url.parse(referer, true).query.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
@@ -48,8 +55,6 @@ module.exports = function (app, addon, passport) {
       });
     }
   );
-
-
 
   return {
     ensureAuthenticated: function() {

@@ -6,3 +6,6 @@ function poptastic(url) {
         // check_oauth();
     }
 }
+HipChat.require('env', function(env){
+    env.resize();
+});
