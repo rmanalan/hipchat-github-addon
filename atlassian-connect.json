@@ -8,7 +8,7 @@
     },
     "links": {
         "self": "{{localBaseUrl}}/atlassian-connect.json",
-        "homepage": "{{localBaseUrl}}/atlassian-connect.json"
+        "homepage": "{{localBaseUrl}}"
     },
     "capabilities": {
         "hipchatApiConsumer": {

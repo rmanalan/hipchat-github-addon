@@ -17,7 +17,6 @@ module.exports = function (app, addon) {
         }
       });
     }
-
   );
 
   app.get('/config',
@@ -50,8 +49,7 @@ module.exports = function (app, addon) {
     }
   );
 
-  // Add-on lifecycle events handlers... if you need them
-
+  // Notify the room that the add-on was installed
   addon.on('installed', function(clientKey, clientInfo, req){
     var hipchatUrl = clientInfo.capabilitiesDoc.links['api'];
     addon.getAccessToken(clientInfo).then(
@@ -73,8 +71,14 @@ module.exports = function (app, addon) {
 
   });
 
-  // addon.on('uninstalled', function(id){
-  //   ...do something
-  // });
+  // Clean up clients when uninstalled
+  addon.on('uninstalled', function(id){
+    addon.settings.client.keys(id+':*', function(err, rep){
+      rep.forEach(function(k){
+        addon.logger.info('Removing key:', k);
+        addon.settings.client.del(k);
+      });
+    });
+  });
 
 };

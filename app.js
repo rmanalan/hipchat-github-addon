@@ -22,8 +22,8 @@ var hipchat = require('atlassian-connect-express-hipchat')(addon, app);
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
 
-passport.serializeUser(function(profile, done) {
-  done(null, profile.id);
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
 });
 
 passport.deserializeUser(function(id, done) {
@@ -38,11 +38,13 @@ passport.use(new GitHubStrategy({
     callbackURL: "https://hcbb.ngrok.com/auth/github/callback",
     userAgent: 'hipchat.com'
   },
-  function(accessToken, refreshToken, profile, done) {
-    profile.accessToken = accessToken;
-    profile.refreshToken = refreshToken;
-    addon.settings.set(profile.id, profile, 'github').then(function(d){
-      done(null, profile);
+  function(accessToken, refreshToken, user, done) {
+    user.accessToken = accessToken;
+    user.refreshToken = refreshToken;
+    addon.settings.set(user.id, user, 'github').then(function(d){
+      done(null, user);
+    }).catch(function(err){
+      done(err, user);
     });
   }
 ));
