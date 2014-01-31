@@ -15,6 +15,8 @@ var routes = require('./routes');
 var app = express();
 var addon = ac(app);
 
+addon.API_BASE_URI = 'https://api.github.com';
+
 // Load the HipChat AC compat layer
 var hipchat = require('atlassian-connect-express-hipchat')(addon, app);
 

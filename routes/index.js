@@ -1,9 +1,10 @@
 var http = require('request');
-var auth = require('./auth');
 
 module.exports = function (app, addon) {
   var passport = addon.passport;
-  var github = auth(app, addon, passport);
+  var proxies = require('./proxies')(app, addon);
+  var config = require('./config')(app, addon);
+  var hipchat = require('../lib/hipchat')(addon);
 
   app.get('/',
 
@@ -19,32 +20,11 @@ module.exports = function (app, addon) {
     }
   );
 
-  app.get('/config',
-    addon.authenticate(),
-    github.ensureAuthenticated(),
-    function(req, res) {
-      res.render('config', req.context);
-    }
-
-  );
-
   app.post('/webhook',
     addon.authenticate(),
     function(req, res) {
-      addon.getAccessToken(req.clientInfo).then(function(token){
-        var hipchatBaseUrl = req.clientInfo.capabilitiesDoc.links['api'];
-        var msgUrl = hipchatBaseUrl + '/room/'+req.context.item.room.id+'/notification?auth_token=' + token.access_token;
-        console.log(msgUrl);
-        http.post({
-          'url': msgUrl,
-          'body': {
-            'message': 'pong'
-          },
-          "json": true
-        }, function(err, resp, body){
-          console.log('msg sent')
-          res.send(200);
-        });
+      hipchat.sendMessage(req.clientInfo, req.context.item.room.id, 'pong').then(function(data){
+        res.send(200);
       });
     }
   );

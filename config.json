@@ -68,7 +68,9 @@
       "url": "redis://localhost:6379"
     },
 
-    "secret": "MyHvjINqPLuBfhEm6kiDKTplazogAsURJF8wOVeWrxnSYGtQdc"
+    "secret": "MyHvjINqPLuBfhEm6kiDKTplazogAsURJF8wOVeWrxnSYGtQdc",
+
+    "maxTokenAge": 648000
   },
 
   // This is the production add-on configuration, which is enabled by setting

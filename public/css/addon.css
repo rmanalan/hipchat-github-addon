@@ -19,3 +19,41 @@ body {
 .centered {
     text-align: center;
 }
+.aui-lozenge {
+  margin-right:2px;
+  text-transform: none;
+}
+span.repo-loz {
+  cursor: pointer !important;
+}
+.no-top-margin {
+  margin-top:5px;
+}
+table.aui .right {
+  text-align:right;
+}
+.aui-group>.aui-item.repo-add-sec {
+  text-align:right;
+  vertical-align: bottom;
+}
+.addon .aui-group {
+  margin-top:0;
+}
+.addon .centered {
+  text-align: center;
+}
+.addon tr.repo-config {
+  background-color:#eee;
+}
+.addon .relative {
+  position:relative;
+}
+.addon .collapse-config {
+  position:absolute;
+  top:0;
+  right:0;
+}
+.addon .toolcol {
+  width:90px;
+  min-width:90px;
+}

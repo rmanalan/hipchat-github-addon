@@ -1,12 +1,12 @@
 var jwt = require('jwt-simple');
 var url = require('url');
 
-module.exports = function (app, addon, passport) {
+module.exports = function (app, addon) {
 
-  app.get('/auth/github', passport.authenticate('github',{ session: false}));
+  app.get('/auth/github', addon.passport.authenticate('github',{ session: false, scope: ['public_repo','repo'] }));
 
   app.get('/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/auth' }),
+    addon.passport.authenticate('github', { failureRedirect: '/auth' }),
     function(req, res){
       // Here's what's going on here:
       //
