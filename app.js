@@ -37,7 +37,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GitHubStrategy({
     clientID: process.env['GH_ID'],
     clientSecret: process.env['GH_SECRET'],
-    callbackURL: "https://hcbb.ngrok.com/auth/github/callback",
+    callbackURL: addon.config.localBaseUrl() + "/auth/github/callback",
     userAgent: 'hipchat.com'
   },
   function(accessToken, refreshToken, user, done) {
