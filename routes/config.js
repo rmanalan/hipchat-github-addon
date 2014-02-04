@@ -170,13 +170,16 @@ module.exports = function(app, addon) {
       })
       .then(function(){
         // Delete existing HC/GH Add-on webhook if it exists
-        var re = new RegExp(process.env.AC_LOCAL_BASE_URL.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
-        var webhook = _.find(hooks.body, function(h){
+        var re = new RegExp(req.clientInfo.clientKey.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'));
+        var webhooks = _.where(hooks.body, function(h){
           return h.name === 'web' && re.test(h.config.url);
         });
-        if (webhook) {
+        if (webhooks.length > 0) {
           addon.logger.info('> Deleting HC/GH add-on hook');
-          return gh.delete('/repos/' + user + '/' + repoName + '/hooks/' + webhook.id, req.clientInfo.githubAccessToken);
+          var promises = webhooks.map(function(webhook){
+            return gh.delete('/repos/' + user + '/' + repoName + '/hooks/' + webhook.id, req.clientInfo.githubAccessToken);
+          });
+          return RSVP.all(promises);
         }
         return;
       })
