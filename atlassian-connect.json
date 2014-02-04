@@ -8,7 +8,7 @@
     },
     "links": {
         "self": "{{localBaseUrl}}/atlassian-connect.json",
-        "homepage": "https://bitbucket.org/hipchat/hc-github-addon"
+        "homepage": "https://bitbucket.org/hipchat/hipchat-github-addon"
     },
     "capabilities": {
         "hipchatApiConsumer": {
