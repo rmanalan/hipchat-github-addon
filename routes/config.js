@@ -8,79 +8,79 @@ var http = require('request').defaults({
 });
 var auth = require('./auth');
 
-function newRepo(repo){
-  return {
-    id: repo.id,
-    name: repo.name,
-    full_name: repo.full_name,
-    description: repo.description,
-    event: {
-      branchtag: true,
-      commit_comment: true,
-      deployment: true,
-      deployment_status: true,
-      fork: true,
-      issues: true,
-      issue_comment: true,
-      member: true,
-      pull_request: true,
-      pull_request_review_comment: true,
-      push: true,
-      release: true,
-      watch: true,
-      status: true,
-      team_add: true,
-      gollum: true
-  },
-    options: {
-      notify: false,
-      restrict_to_branch: '',
-      color: 'yellow'
-    }
-  }
-}
-
-function newHook(roomId, token){
-  return {
-    name: 'web',
-    config: {
-      url: process.env.AC_LOCAL_BASE_URL + '/incoming?r=' + roomId + '&i=' + token,
-      secret: 'changeme',
-      content_type: 'json',
-      ssl_version: '3.0',
-      insecure_ssl: false
-    },
-    events: [
-      "commit_comment",
-      "create",
-      "delete",
-      "deployment",
-      "deployment_status",
-      "download",
-      "follow",
-      "fork",
-      "fork_apply",
-      "gist",
-      "gollum",
-      "issue_comment",
-      "issues",
-      "member",
-      "public",
-      "pull_request",
-      "pull_request_review_comment",
-      "push",
-      "release",
-      "status",
-      "team_add",
-      "watch"
-    ],
-    'active': true
-  }
-}
-
 module.exports = function(app, addon) {
   var githubAuth = auth(app, addon);
   var gh = {};
+
+  function newRepo(repo){
+    return {
+      id: repo.id,
+      name: repo.name,
+      full_name: repo.full_name,
+      description: repo.description,
+      event: {
+        branchtag: true,
+        commit_comment: true,
+        deployment: true,
+        deployment_status: true,
+        fork: true,
+        issues: true,
+        issue_comment: true,
+        member: true,
+        pull_request: true,
+        pull_request_review_comment: true,
+        push: true,
+        release: true,
+        watch: true,
+        status: true,
+        team_add: true,
+        gollum: true
+    },
+      options: {
+        notify: false,
+        restrict_to_branch: '',
+        color: 'yellow'
+      }
+    }
+  }
+
+  function newHook(roomId, token, secret){
+    return {
+      name: 'web',
+      config: {
+        url: addon.config.localBaseUrl() + '/incoming?r=' + roomId + '&i=' + token,
+        secret: secret,
+        content_type: 'json',
+        ssl_version: '3.0',
+        insecure_ssl: false
+      },
+      events: [
+        "commit_comment",
+        "create",
+        "delete",
+        "deployment",
+        "deployment_status",
+        "download",
+        "follow",
+        "fork",
+        "fork_apply",
+        "gist",
+        "gollum",
+        "issue_comment",
+        "issues",
+        "member",
+        "public",
+        "pull_request",
+        "pull_request_review_comment",
+        "push",
+        "release",
+        "status",
+        "team_add",
+        "watch"
+      ],
+      'active': true
+    }
+  }
 
   gh.get = function(uri, accessToken){
     return new RSVP.Promise(function(resolve, reject){
@@ -186,7 +186,7 @@ module.exports = function(app, addon) {
       .then(function(){
         // Create new hook
         addon.logger.info('> Creating new HC/GH add-on hook');
-        var data = newHook(req.context.roomId, req.clientInfo.clientKey);
+        var data = newHook(req.context.roomId, req.clientInfo.clientKey, req.clientInfo.oauthSecret);
         return gh.post('/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken, data);
       })
       .then(function(newHook){
