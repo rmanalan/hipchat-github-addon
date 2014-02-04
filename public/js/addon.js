@@ -73,19 +73,22 @@ app.controller('MainCtrl',
             $scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Subscription.all();
+            dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
 
             $scope.repoNameValid = function(repoName){
                 return /\//.test(repoName);
             }
 
             $scope.subscribe = function(repoName){
+                // TODO add spinner to button
+                // TODO prevent adding dups
                 $scope.error = {};
                 if (!$scope.repoNameValid(repoName)) { return false; }
                 var subscription = new Subscription({repoName: repoName});
                 subscription.$save().then(function(repo){
                     $scope.repoName = '';
                     $scope.subscribedRepos.push(repo);
-                    dialog.resize();
+                    dialog.resize('100%', '1000px');
                 }).catch(function(err){
                     $scope.error.title = 'Repository error';
                     $scope.error.msg = 'Repository named ' + repoName + ' ' + err.data.message;
@@ -102,6 +105,7 @@ app.controller('MainCtrl',
                 $scope.error = {};
                 var idx = $scope.subscribedRepos.map(function(a) { return a.id; }).indexOf(this.repo.id);
                 $scope.subscribedRepos.splice(idx, 1);
+                dialog.resize();
                 Subscription.remove({id: this.repo.id});
             }
 
@@ -109,12 +113,14 @@ app.controller('MainCtrl',
                 $scope.error = {};
                 angular.element(document.querySelectorAll('.repo-config')).addClass('hidden');
                 angular.element(document.querySelector('#repo-config-'+this.$index)).removeClass('hidden');
+                dialog.resize('100%', '1000px');
                 return false;
             }
 
             $scope.hideConfig = function(){
                 $scope.error = {};
                 angular.element(document.querySelector('#repo-config-'+this.$index)).addClass('hidden');
+                dialog.resize();
                 return false;
             }
         }

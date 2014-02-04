@@ -1,0 +1,5 @@
+Build for <a href="{{repository.html_url}}"><b>{{name}}</b></a> (<a href="{{commit.html_url}}"><b>{{trim sha}}</b></a>)
+{{#ifCond state 'success'}}finished successfully {{#if target_url}}&rarr; <a href="{{target_url}}"><i>{{target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond state 'pending'}}is pending {{#if target_url}}&rarr; <a href="{{target_url}}"><i>{{target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond state 'error'}}encountered an error {{#if target_url}}&rarr; <a href="{{target_url}}"><i>{{target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond state 'failure'}}failed {{#if target_url}}&rarr; <a href="{{target_url}}"><i>{{target_url}}</i></a>{{/if}}{{/ifCond}}

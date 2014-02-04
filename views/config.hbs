@@ -14,17 +14,18 @@
     <div class="aui-item repo-add-sec">
         <form class="aui">
             <input type="text" class="text" placeholder="username/repo" ng-model='repoName'>
+            {{! TODO add support for typeahead }}
             <button class="aui-button" ng-attr-aria-disabled="[[!repoNameValid(repoName)]]" ng-click="subscribe(repoName)">
                 <span class="aui-icon aui-icon-small aui-iconfont-add">Add </span>
             </button>
         </form>
     </div>
 </div>
-<table class="aui">
+<table class="aui" ng-cloak>
     <tbody ng-repeat="repo in subscribedRepos | orderBy:'full_name'">
         <tr>
-            <td><strong>[[repo.full_name]]</strong></td>
-            <td>[[repo.description]]</td>
+            <td class="repo-name"><strong>[[repo.full_name]]</strong></td>
+            <td class="repo-descr">[[repo.description]]</td>
             <td class="right toolcol">
                 <button class="aui-button aui-button-subtle" ng-click="showConfig()">
                     <span class="aui-icon aui-icon-small aui-iconfont-edit">Edit</span>
@@ -35,83 +36,114 @@
         </tr>
         <tr class="repo-config hidden" id="repo-config-[[$index]]">
             <td colspan="3">
+                <form class="aui">
                 <div class="aui-group">
                     <div class="aui-item">
-                        <h4>Events</h4>
+                        <h3>Events</h3>
                         <div class="aui-group">
                             <div class="aui-item">
                                 <div class="checkbox">
-                                    <input type="checkbox" name="branchtag" ng-model="repo.event.branchtag" ng-checked="repo.event.branchtag" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="branchtag" ng-model="repo.event.branchtag" ng-checked="repo.event.branchtag" ng-change="updateSubscription(repo)">
                                     <label for="branchtag">Branches or tags</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="commit_comment" ng-model="repo.event.commit_comment" ng-checked="repo.event.commit_comment" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="commit_comment" ng-model="repo.event.commit_comment" ng-checked="repo.event.commit_comment" ng-change="updateSubscription(repo)">
                                     <label for="commit_comment">Commit comments</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="fork" ng-model="repo.event.fork" ng-checked="repo.event.fork" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="deployment" ng-model="repo.event.deployment" ng-checked="repo.event.deployment" ng-change="updateSubscription(repo)">
+                                    <label for="deployment">Deployment</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" class="checkbox" name="deployment_status" ng-model="repo.event.deployment_status" ng-checked="repo.event.deployment_status" ng-change="updateSubscription(repo)">
+                                    <label for="deployment_status">Deployment status</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" class="checkbox" name="fork" ng-model="repo.event.fork" ng-checked="repo.event.fork" ng-change="updateSubscription(repo)">
                                     <label for="fork">Forks</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="issues" ng-model="repo.event.issues" ng-checked="repo.event.issues" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="issues" ng-model="repo.event.issues" ng-checked="repo.event.issues" ng-change="updateSubscription(repo)">
                                     <label for="issues">Issues</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="issue_comment" ng-model="repo.event.issue_comment" ng-checked="repo.event.issue_comment" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="issue_comment" ng-model="repo.event.issue_comment" ng-checked="repo.event.issue_comment" ng-change="updateSubscription(repo)">
                                     <label for="issue_comment">Issue comments</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="member" ng-model="repo.event.member" ng-checked="repo.event.member" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="member" ng-model="repo.event.member" ng-checked="repo.event.member" ng-change="updateSubscription(repo)">
                                     <label for="member">Members</label>
-                                </div>
-                                <div class="checkbox">
-                                    <input type="checkbox" name="pull_request" ng-model="repo.event.pull_request" ng-checked="repo.event.pull_request" ng-change="updateSubscription(repo)">
-                                    <label for="pull_request">Pull requests</label>
                                 </div>
                             </div>
                             <div class="aui-item">
                                 <div class="checkbox">
-                                    <input type="checkbox" name="pull_request_review_comment" ng-model="repo.event.pull_request_review_comment" ng-checked="repo.event.pull_request_review_comment" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="pull_request" ng-model="repo.event.pull_request" ng-checked="repo.event.pull_request" ng-change="updateSubscription(repo)">
+                                    <label for="pull_request">Pull requests</label>
+                                </div>
+                                <div class="checkbox">
+                                    <input type="checkbox" class="checkbox" name="pull_request_review_comment" ng-model="repo.event.pull_request_review_comment" ng-checked="repo.event.pull_request_review_comment" ng-change="updateSubscription(repo)">
                                     <label for="pull_request_review_comment">Pull request comments</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="push" ng-model="repo.event.push" ng-checked="repo.event.push" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="push" ng-model="repo.event.push" ng-checked="repo.event.push" ng-change="updateSubscription(repo)">
                                     <label for="push">Pushes</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="release" ng-model="repo.event.release" ng-checked="repo.event.release" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="release" ng-model="repo.event.release" ng-checked="repo.event.release" ng-change="updateSubscription(repo)">
                                     <label for="release">Releases</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="watch" ng-model="repo.event.watch" ng-checked="repo.event.watch" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="watch" ng-model="repo.event.watch" ng-checked="repo.event.watch" ng-change="updateSubscription(repo)">
                                     <label for="watch">Stars</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="status" ng-model="repo.event.status" ng-checked="repo.event.status" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="status" ng-model="repo.event.status" ng-checked="repo.event.status" ng-change="updateSubscription(repo)">
                                     <label for="status">Statuses</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="team_add" ng-model="repo.event.team_add" ng-checked="repo.event.team_add" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="team_add" ng-model="repo.event.team_add" ng-checked="repo.event.team_add" ng-change="updateSubscription(repo)">
                                     <label for="team_add">Team adds</label>
                                 </div>
                                 <div class="checkbox">
-                                    <input type="checkbox" name="gollum" ng-model="repo.event.gollum" ng-checked="repo.event.gollum" ng-change="updateSubscription(repo)">
+                                    <input type="checkbox" class="checkbox" name="gollum" ng-model="repo.event.gollum" ng-checked="repo.event.gollum" ng-change="updateSubscription(repo)">
                                     <label for="gollum">Wiki pages</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="aui-item relative">
-                        <h4>HipChat options</h4>
-                        <div class="checkbox">
-                            <input type="checkbox" name="notify" ng-model="repo.options.notify" ng-checked="repo.options.notify" ng-change="updateSubscription(repo)">
-                            <label for="notify">Notify members of room</label>
-                        </div>
+                        <h3>Options</h3>
+                        <fieldset>
+                            <div class="field-group">
+                                <label for="branch-filter">Restrict to branch</label>
+                                <input type="text" class="text" name="branch-filter" ng-model="repo.options.restrict_to_branch" ng-blur="updateSubscription(repo)">
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="field-group">
+                                <label for="color">Background color</label>
+                                <select name="color" class="select" ng-model="repo.options.color" ng-change="updateSubscription(repo)">
+                                    <option value="yellow">Yellow</option>
+                                    <option value="gray">Gray</option>
+                                    <option value="green">Green</option>
+                                    <option value="purple">Purple</option>
+                                    <option value="red">Red</option>
+                                    <option value="random">Random</option>
+                                </select>
+                            </div>
+                        </fieldset>
+                        <fieldset class="group">
+                            <div class="checkbox">
+                                <input class="checkbox" type="checkbox" name="notify" ng-model="repo.options.notify" ng-checked="repo.options.notify" ng-change="updateSubscription(repo)">
+                                <label for="notify">Notify members of room</label>
+                            </div>
+                        </fieldset>
                         <button class="aui-button aui-button-subtle collapse-config" ng-click="hideConfig()">
                             <span class="aui-icon aui-icon-small aui-iconfont-arrows-up">Arrows up</span>
                         </button>
                     </div>
                 </div>
+                </form>
             </td>
         </tr>
     </tbody>

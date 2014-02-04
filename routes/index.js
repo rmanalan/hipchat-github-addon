@@ -1,8 +1,11 @@
+var RSVP = require('rsvp');
 var http = require('request');
+var render = require('../lib/messageRenderer')({
+  templateDir: "./views/messages"
+});
 
 module.exports = function (app, addon) {
   var passport = addon.passport;
-  var proxies = require('./proxies')(app, addon);
   var config = require('./config')(app, addon);
   var hipchat = require('../lib/hipchat')(addon);
 
@@ -28,6 +31,53 @@ module.exports = function (app, addon) {
       });
     }
   );
+
+  app.post('/incoming', function(req, res){
+    function send(msg){
+      hipchat.sendMessage(req.query.i, req.query.r, msg).then(function(data){
+        res.send(200);
+      }).catch(function(err){
+        addon.logger.error(err);
+        res.send(500);
+      });
+    }
+
+    function shouldMsgBeSent(id, evt){
+      return new RSVP.Promise(function(resolve, reject){
+        addon.settings.get('repos:'+id, req.query.i)
+          .then(function(subscription){
+            if (subscription.event.branchtag && (evt === 'create' || evt === 'delete')) {
+              resolve(subscription);
+            } else if (subscription.event[evt]){
+              resolve(subscription);
+            } else {
+              reject(new Error('Not subscribed to event'));
+            }
+          })
+          .catch(function(err){
+            addon.logger.error(err);
+            reject(err);
+          });
+      });
+
+    }
+
+    var event = req.headers['x-github-event'];
+    var data = req.body;
+
+    // special handling for push events
+    if (event === 'push' && data.commits.length === 0) {
+      res.send(200);
+      return;
+    }
+
+    console.log(require('util').inspect(data, {colors:true, depth:4}));
+    addon.logger.info('Received',event);
+
+    shouldMsgBeSent(data.repository.id, event).then(function(){
+      send(render(event, data));
+    });
+  });
 
   // Notify the room that the add-on was installed
   addon.on('installed', function(clientKey, clientInfo, req){

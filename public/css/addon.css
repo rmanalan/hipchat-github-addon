@@ -1,4 +1,7 @@
 /* add-on styles */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
 .intro-header h1 {
   font-size: 48px;
   line-height: 60px;
@@ -50,10 +53,16 @@ table.aui .right {
 }
 .addon .collapse-config {
   position:absolute;
-  top:0;
+  top:-4px;
   right:0;
 }
 .addon .toolcol {
   width:90px;
   min-width:90px;
+}
+.addon .repo-descr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 495px;
 }
