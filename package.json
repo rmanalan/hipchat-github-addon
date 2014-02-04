@@ -11,7 +11,7 @@
     "static-expiry": ">=0.0.10",
     "request": "~2.33.0",
     "atlassian-connect-express": "~0.9.0-beta6",
-    "atlassian-connect-express-redis": "~0.1.0",
+    "atlassian-connect-express-redis": "~0.1.3",
     "atlassian-connect-express-hipchat": "~0.1.6",
     "passport": "*",
     "passport-github": "*",
