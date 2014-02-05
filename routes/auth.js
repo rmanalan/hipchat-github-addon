@@ -1,22 +1,20 @@
 var jwt = require('jwt-simple');
 var url = require('url');
+var qs = require('qs');
 
 module.exports = function (app, addon) {
 
-  app.get('/auth/github', addon.passport.authenticate('github',{ session: false, scope: ['public_repo','repo'] }));
+  function authWithQueryAsState(req, res, next) {
+    addon.passport.authenticate('github',{ session: false, scope: ['repo'], state: qs.stringify(req.query) })(req, res, next);
+  }
+
+  app.get('/auth/github', authWithQueryAsState);
 
   app.get('/auth/github/callback',
     addon.passport.authenticate('github', { failureRedirect: '/auth' }),
     function(req, res){
-      // Here's what's going on here:
-      //
-      // * We get the jwt from the referer header so we can get the
-      //   clientId. We're doing it this way because we're not using sessions
-      // * Once we have the clientId, we can fetch the clientInfo from Redis
-      // * We then augment the clientInfo in Redis with the GitHub userid
-      //   and accessToken
-      var referer = req.headers['referer'];
-      var signedRequest = url.parse(referer, true).query.signed_request;
+      var state = qs.parse(req.query.state);
+      var signedRequest = state.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
 
