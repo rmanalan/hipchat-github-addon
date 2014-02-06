@@ -1,6 +1,12 @@
 var jwt = require('jwt-simple');
 var url = require('url');
 var qs = require('qs');
+var http = require('request').defaults({
+  json: true,
+  headers: {
+    'User-Agent': 'HipChat/GitHub Connector'
+  }
+});
 
 module.exports = function (app, addon) {
 
@@ -57,8 +63,24 @@ module.exports = function (app, addon) {
   return {
     ensureAuthenticated: function() {
       return function (req, res, next) {
-        if (req.clientInfo.githubUserId) { return next(); }
-        res.render('login');
+        http.get({
+          uri: addon.API_BASE_URI + '/user',
+          qs: {
+            access_token: req.clientInfo.githubAccessToken
+          }
+        }, function(err, resp, body){
+          if(err){
+            res.render('login');
+            return;
+          }
+          if (req.clientInfo.githubUserId && req.clientInfo.githubUserId === body.id) {
+            return next();
+          } else {
+            res.render('login');
+            return;
+          }
+        });
+
       }
     }
   }
