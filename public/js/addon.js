@@ -95,7 +95,6 @@ app.controller('MainCtrl',
                     dialog.resize('100%', '1000px');
                     angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 }).catch(function(err){
-                    console.error(err);
                     $scope.error.title = err.data.title || 'Repository error';
                     $scope.error.msg = err.data.msg || 'Repository named ' + repoName + ' ' + err.data.message;
                     angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
@@ -155,17 +154,14 @@ app.controller('MainCtrl',
                 };
             };
             $scope.search = debounce(function(name){
-                console.log(name);
                 if (name.length < 4) { return; }
+                angular.element(document.querySelector('#add-repo')).removeClass('aui-iconfont-add').addClass('aui-icon-wait');
                 $scope.searchResults = Repo.search({q: name}, function(){
-                    if ($scope.searchResults.results.length > 0) {
-                        // angular.element(document.querySelector('.repo-results')).removeClass('hidden');
-                    }
+                    angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 });
             }, 400);
 
             $scope.selectResult = function(){
-                console.log(999,this)
                 $scope.repoName = this.result.name;
                 angular.element(document.querySelector('.repo-results')).addClass('hidden');
             }
