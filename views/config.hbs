@@ -13,11 +13,13 @@
     </div>
     <div class="aui-item repo-add-sec">
         <form class="aui">
-            <input type="text" class="text" placeholder="username/repo" ng-model='repoName'>
-            {{! TODO add support for typeahead }}
+            <input type="text" class="text" placeholder="username/repo" ng-model="repoName" ng-change="search(repoName)">
             <button class="aui-button" ng-attr-aria-disabled="[[!repoNameValid(repoName)]]" ng-click="subscribe(repoName)">
-                <span class="aui-icon aui-icon-small aui-iconfont-add">Add </span>
+                <span id="add-repo" class="aui-icon aui-icon-small aui-iconfont-add">Add </span>
             </button>
+            <ul class="aui-nav repo-results hidden" ng-class="{hidden: !searchResults.results.length>0}">
+                <li ng-repeat="result in searchResults.results" ng-click="selectResult()">[[result.name]]</li>
+            </ul>
         </form>
     </div>
 </div>

@@ -36,7 +36,7 @@ app.config(
         }
     ]
 );
-app.factory('subscriptionService',
+app.factory('repoService',
     [
         '$resource',
         function($resource){
@@ -59,6 +59,11 @@ app.factory('subscriptionService',
                     all: {
                         method: 'GET',
                         isArray: true
+                    },
+                    search: {
+                        url: '/repos/search',
+                        method: 'GET',
+                        isArray: false
                     }
                 }
             );
@@ -68,11 +73,11 @@ app.factory('subscriptionService',
 app.controller('MainCtrl',
     [
         '$scope',
-        'subscriptionService',
-        function($scope, Subscription){
+        'repoService',
+        function($scope, Repo){
             $scope.error = {};
             $scope.repoName = '';
-            $scope.subscribedRepos = Subscription.all();
+            $scope.subscribedRepos = Repo.all();
             dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
 
             $scope.repoNameValid = function(repoName){
@@ -80,25 +85,27 @@ app.controller('MainCtrl',
             }
 
             $scope.subscribe = function(repoName){
-                // TODO add spinner to button
-                // TODO prevent adding dups
+                angular.element(document.querySelector('#add-repo')).removeClass('aui-iconfont-add').addClass('aui-icon-wait');
                 $scope.error = {};
                 if (!$scope.repoNameValid(repoName)) { return false; }
-                var subscription = new Subscription({repoName: repoName});
+                var subscription = new Repo({repoName: repoName});
                 subscription.$save().then(function(repo){
                     $scope.repoName = '';
                     $scope.subscribedRepos.push(repo);
                     dialog.resize('100%', '1000px');
+                    angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 }).catch(function(err){
-                    $scope.error.title = 'Repository error';
-                    $scope.error.msg = 'Repository named ' + repoName + ' ' + err.data.message;
+                    console.error(err);
+                    $scope.error.title = err.data.title || 'Repository error';
+                    $scope.error.msg = err.data.msg || 'Repository named ' + repoName + ' ' + err.data.message;
+                    angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 });
                 return false;
             }
 
             $scope.updateSubscription = function(repo){
                 $scope.error = {};
-                Subscription.update({id: repo.id}, repo);
+                Repo.update({id: repo.id}, repo);
             }
 
             $scope.unsubscribe = function(){
@@ -106,7 +113,7 @@ app.controller('MainCtrl',
                 var idx = $scope.subscribedRepos.map(function(a) { return a.id; }).indexOf(this.repo.id);
                 $scope.subscribedRepos.splice(idx, 1);
                 dialog.resize();
-                Subscription.remove({id: this.repo.id});
+                Repo.remove({id: this.repo.id});
             }
 
             $scope.showConfig = function(){
@@ -122,6 +129,45 @@ app.controller('MainCtrl',
                 angular.element(document.querySelector('#repo-config-'+this.$index)).addClass('hidden');
                 dialog.resize();
                 return false;
+            }
+
+            function debounce(func, wait, immediate) {
+                var timeout, args, context, timestamp, result;
+                return function() {
+                    context = this;
+                    args = arguments;
+                    timestamp = new Date();
+                    var later = function() {
+                        var last = (new Date()) - timestamp;
+                        if (last < wait) {
+                            timeout = setTimeout(later, wait - last);
+                        } else {
+                            timeout = null;
+                            if (!immediate) result = func.apply(context, args);
+                        }
+                    };
+                    var callNow = immediate && !timeout;
+                    if (!timeout) {
+                        timeout = setTimeout(later, wait);
+                    }
+                    if (callNow) result = func.apply(context, args);
+                    return result;
+                };
+            };
+            $scope.search = debounce(function(name){
+                console.log(name);
+                if (name.length < 4) { return; }
+                $scope.searchResults = Repo.search({q: name}, function(){
+                    if ($scope.searchResults.results.length > 0) {
+                        // angular.element(document.querySelector('.repo-results')).removeClass('hidden');
+                    }
+                });
+            }, 400);
+
+            $scope.selectResult = function(){
+                console.log(999,this)
+                $scope.repoName = this.result.name;
+                angular.element(document.querySelector('.repo-results')).addClass('hidden');
             }
         }
     ]

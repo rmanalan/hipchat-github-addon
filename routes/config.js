@@ -1,16 +1,10 @@
 var RSVP = require('rsvp');
 var _ = require('lodash');
-var http = require('request').defaults({
-  json: true,
-  headers: {
-    'User-Agent': 'HipChat/GitHub Connector'
-  }
-});
 var auth = require('./auth');
 
 module.exports = function(app, addon) {
   var githubAuth = auth(app, addon);
-  var gh = {};
+  var gh = require('../lib/github')(addon);
 
   function newRepo(repo){
     return {
@@ -82,58 +76,6 @@ module.exports = function(app, addon) {
     }
   }
 
-  gh.get = function(uri, accessToken){
-    return new RSVP.Promise(function(resolve, reject){
-      http.get({
-        uri: addon.API_BASE_URI + uri,
-        qs: {
-          access_token: accessToken
-        },
-      }, function(err, resp, body){
-        if(err){
-          reject(err);
-          return;
-        }
-        resolve(resp);
-      });
-    });
-  }
-
-  gh.post = function(uri, accessToken, data){
-    return new RSVP.Promise(function(resolve, reject){
-      http.post({
-        uri: addon.API_BASE_URI + uri,
-        qs: {
-          access_token: accessToken
-        },
-        body: data
-      }, function(err, resp, body){
-        if(err){
-          reject(err);
-          return;
-        }
-        resolve(resp);
-      });
-    });
-  }
-
-  gh.delete = function(uri, accessToken){
-    return new RSVP.Promise(function(resolve, reject){
-      http.del({
-        uri: addon.API_BASE_URI + uri,
-        qs: {
-          access_token: accessToken
-        }
-      }, function(err, resp, body){
-        if(err){
-          reject(err);
-          return;
-        }
-        resolve(resp);
-      });
-    });
-  }
-
   // Config page
   app.get('/config',
     addon.authenticate(),
@@ -157,7 +99,19 @@ module.exports = function(app, addon) {
         // All registered hooks
         addon.logger.info('> Getting repo details');
         repo = resp.body;
-        return gh.get('/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken);
+        return addon.settings.get('repos:'+repo.id, req.clientInfo.clientKey)
+          .then(function(subscription){
+            if(subscription) {
+              // subscription already exists
+              addon.logger.error(subscription);
+              throw {
+                title: 'Subscription already exists',
+                msg: 'Subscription to ' + subscription.full_name + ' already exists'
+              };
+            } else {
+              return gh.get('/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken);
+            }
+          });
       })
       .then(function(h){
         hooks = h;
@@ -192,7 +146,14 @@ module.exports = function(app, addon) {
       .then(function(newHook){
         if(newHook.statusCode !== 201){
           errCode = newHook.statusCode;
-          throw newHook.body;
+          if (newHook.body.message == 'Not Found') {
+            throw {
+              title: 'Admin required',
+              msg: 'You need admin access to ' + repo.full_name + ' in order to register a hook'
+            }
+          } else {
+            throw newHook.body;
+          }
         } else {
           return newHook;
         }
@@ -207,7 +168,7 @@ module.exports = function(app, addon) {
         });
       })
       .catch(function(err){
-        addon.logger.error(err);
+        addon.logger.error(888, err);
         res.json(500, err);
       });
   });
@@ -258,6 +219,19 @@ module.exports = function(app, addon) {
         if(err) {
           addon.logger.error(err);
         }
+      });
+  });
+
+  app.get('/repos/search', addon.authenticate(), function(req, res){
+    var path = '/search/repositories?q=' + encodeURIComponent(req.query.q).replace(/%20/g, '+');
+    gh.get(path, req.clientInfo.githubAccessToken)
+      .then(function(results){
+        res.json({ results: results.body.items.map(function(i){
+          return {
+            name: i.full_name,
+            description: i.description
+          };
+        }).slice(0,10)});
       });
   });
 

@@ -8,6 +8,7 @@ module.exports = function (app, addon) {
   var passport = addon.passport;
   var config = require('./config')(app, addon);
   var hipchat = require('../lib/hipchat')(addon);
+  var github = require('../lib/github')(addon);
 
   app.get('/',
 
@@ -49,10 +50,16 @@ module.exports = function (app, addon) {
       });
     }
 
+    // TODO support branch filtering
     function shouldMsgBeSent(id, evt){
       return new RSVP.Promise(function(resolve, reject){
         addon.settings.get('repos:'+id, req.query.i)
           .then(function(subscription){
+            if(!subscription) {
+              reject(new Error('Subscription not found'));
+              // TODO delete hook if hook is invalid
+              return;
+            }
             if (subscription.event.branchtag && (evt === 'create' || evt === 'delete')) {
               resolve(subscription);
             } else if (subscription.event[evt]){
@@ -66,14 +73,13 @@ module.exports = function (app, addon) {
             reject(err);
           });
       });
-
     }
 
     var event = req.headers['x-github-event'];
     var data = req.body;
 
     // special handling for push events
-    if (event === 'push' && data.commits.length === 0) {
+    if (event === 'push' && data.commits && data.commits.length === 0) {
       res.send(200);
       return;
     }
@@ -81,31 +87,19 @@ module.exports = function (app, addon) {
     console.log(require('util').inspect(data, {colors:true, depth:4}));
     addon.logger.info('Received',event);
 
-    shouldMsgBeSent(data.repository.id, event).then(function(){
-      send(render(event, data));
-    });
+    shouldMsgBeSent(data.repository.id, event)
+      .then(function(subscription){
+        send(render(event, data), subscription);
+      })
+      .catch(function(err){
+        addon.logger.error(404, err);
+        res.send(404);
+      });
   });
 
   // Notify the room that the add-on was installed
   addon.on('installed', function(clientKey, clientInfo, req){
-    var hipchatUrl = clientInfo.capabilitiesDoc.links['api'];
-    addon.getAccessToken(clientInfo).then(
-      function(token) {
-        http.post(hipchatUrl + '/room/'+req.body.roomId+'/notification?auth_token=' + token.access_token,{
-          "body": {
-            "message": "The GitHub add-on has been installed in this room"
-          },
-          "json": true
-        }, function(err, res){
-          if (err){
-            addon.logger.error('Error sending message to HipChat', err);
-          }
-        });
-      }, function(err) {
-        addon.logger.error("Unable to get access token: ", err);
-      }
-    )
-
+    hipchat.sendMessage(clientInfo, req.body.roomId, 'The GitHub add-on has been installed in this room');
   });
 
   // Clean up clients when uninstalled
