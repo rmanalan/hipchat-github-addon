@@ -33,8 +33,15 @@ module.exports = function (app, addon) {
   );
 
   app.post('/incoming', function(req, res){
-    function send(msg){
-      hipchat.sendMessage(req.query.i, req.query.r, msg).then(function(data){
+    // TODO verify x-hub-signature... currently broken. Can't seem to get matching hmac sigs
+    // if (!req.isSecure) {
+    //   // Return 200 even if the sig doesn't match, but ignore it locally.
+    //   // See <http://pubsubhubbub.googlecode.com/svn/trunk/pubsubhubbub-core-0.3.html#authednotify>
+    //   res.send(200)
+    //   return;
+    // }
+    function send(msg, opts){
+      hipchat.sendMessage(req.query.i, req.query.r, msg, opts).then(function(data){
         res.send(200);
       }).catch(function(err){
         addon.logger.error(err);

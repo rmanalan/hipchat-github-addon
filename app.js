@@ -7,6 +7,7 @@ var hbs = require('express-hbs');
 var http = require('http');
 var path = require('path');
 var os = require('os');
+var crypto = require('crypto');
 
 ac.store.register('redis', require('atlassian-connect-express-redis'));
 
@@ -64,8 +65,24 @@ app.set('views', viewsDir);
 app.use(express.favicon());
 app.use(express.logger(devEnv ? 'dev' : 'default'));
 app.use(express.compress());
-app.use(express.urlencoded())
-app.use(express.json())
+app.use(express.urlencoded());
+app.use(express.json({
+  // FIXME hmac sig doesn't match
+  verify: function (req, res, buffer){
+    var providedSignature = req.headers['x-hub-signature'];
+    if (!providedSignature) {
+      return;
+    }
+    var hmac = crypto.createHmac('sha1', process.env['GH_SECRET']);
+    hmac.update(buffer);
+    var calculatedSignature = 'sha1=' + hmac.digest('hex');
+    if (providedSignature !== calculatedSignature) {
+      req.isSecure = false;
+    } else {
+      req.isSecure = true;
+    }
+  }
+}));
 app.use(express.cookieParser());
 
 app.use(passport.initialize());
