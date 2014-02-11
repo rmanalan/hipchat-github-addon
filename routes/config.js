@@ -168,7 +168,6 @@ module.exports = function(app, addon) {
         });
       })
       .catch(function(err){
-        addon.logger.error(888, err);
         res.json(500, err);
       });
   });
