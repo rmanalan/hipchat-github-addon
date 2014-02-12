@@ -1,1 +1,2 @@
-<a href="{{pull_request.user.html_url}}"><b>{{pull_request.user.login}}</b></a> {{action}} pull request #{{number}}: <a href="{{pull_request.html_url}}"><b>{{pull_request.title}}</b></a>
+<a href="{{pull_request.user.html_url}}">{{pull_request.user.login}}</a> {{action}} pull request #<a href="{{pull_request.html_url}}">{{number}}</a> on <a href="{{repository.html_url}}">{{repository.full_name}}</a>: <a href="{{pull_request.html_url}}"><b>{{pull_request.title}}</b></a>
+<pre>{{pull_request.body}}</pre>

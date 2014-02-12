@@ -1,5 +1,5 @@
-<a href="{{pusher.html_url}}"><b>{{pusher.name}}</b></a> pushed {{commits.length}} commit(s) to <b><a href="{{repository.url}}">{{repository.name}}</a> ({{ref}})</b><br>
+<a href="{{pusher.html_url}}">{{pusher.name}}</a> pushed {{commits.length}} {{pluralize commits.length 'commit' 'commits'}} to <a href="{{repository.url}}">{{repository.name}}</a>:{{extractBranch ref}}<br>
 {{#each commits}}
-- {{this.message}} <a href="{{this.url}}">{{trim this.id}}</a> / {{this.author.username}}<br>
+- {{this.message}} / by {{this.author.username}} <a href="{{this.url}}">{{trim this.id}}</a><br>
 {{else}}
 {{/each}}

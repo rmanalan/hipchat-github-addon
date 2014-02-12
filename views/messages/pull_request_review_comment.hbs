@@ -1,1 +1,2 @@
-<a href="{{comment.user.html_url}}"><b>{{comment.user.login}}</b></a> <a href="{{comment.html_url}}">commented</a> on a <a href="{{pull_request_url}}">pull request</a> for <b>{{repository.full_name}}</b>
+<a href="{{comment.user.html_url}}">{{comment.user.login}}</a> commented on <a href="{{comment.html_url}}">{{comment.path}}</a> in a <a href="{{comment.html_url}}">pull request</a> for <a href="{{repository.html_url}}">{{repository.full_name}}</a>
+<pre>{{comment.body}}</pre>
