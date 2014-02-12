@@ -99,7 +99,7 @@ module.exports = function (app, addon) {
 
   // Notify the room that the add-on was installed
   addon.on('installed', function(clientKey, clientInfo, req){
-    hipchat.sendMessage(clientInfo, req.body.roomId, 'The GitHub add-on has been installed in this room');
+    hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' add-on has been installed in this room');
   });
 
   // Clean up clients when uninstalled
