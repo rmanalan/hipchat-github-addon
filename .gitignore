@@ -3,3 +3,5 @@
 node_modules
 *.pem
 newrelic_agent.log
+*.key
+*.crt

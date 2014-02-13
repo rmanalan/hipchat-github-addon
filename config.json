@@ -3,6 +3,7 @@
     "usePublicKey": false,
     "watch": false,
     "port": 3000,
+    "maxTokenAge": 999999999,
     "store": {
       "adapter": "redis",
       "url": "redis://localhost:6379"
@@ -11,7 +12,7 @@
   "production": {
     "usePublicKey": false,
     "port": "$PORT",
-    "localBaseUrl": "https://hipchat-github.herokuapp.com",
+    "localBaseUrl": "https://github.hipch.at",
     "store": {
       "adapter": "redis",
       "url": "$DATABASE_URL"
