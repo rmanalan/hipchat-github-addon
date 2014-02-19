@@ -17,7 +17,9 @@
             ]
         },
         "installable": {
-            "callbackUrl": "{{localBaseUrl}}/installable"
+            "callbackUrl": "{{localBaseUrl}}/installable",
+            "allowRoom": true,
+            "allowGlobal": false
         },
         "configurable": {
              "url": "{{localBaseUrl}}/config"
