@@ -1,2 +1,2 @@
 <a href="{{comment.user.html_url}}">{{comment.user.login}}</a> {{action}} a <a href="{{comment.html_url}}">comment</a> on issue #<a href="{{issue.html_url}}">{{issue.number}}</a> for <a href="{{repository.html_url}}">{{repository.full_name}}</a>: <a href="{{issue.html_url}}"><b>Re: {{issue.title}}</b></a><br>
-<pre>{{comment.body}}</pre>
+<pre>{{summarize comment.body}}</pre>
