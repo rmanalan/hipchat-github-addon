@@ -41,12 +41,13 @@ module.exports = function (app, addon) {
     //   res.send(200)
     //   return;
     // }
+
+    res.send(200);
+
     function send(msg, opts){
       hipchat.sendMessage(req.query.i, req.query.r, msg, opts).then(function(data){
-        res.send(200);
       }).catch(function(err){
         addon.logger.error(err);
-        res.send(500);
       });
     }
 
@@ -80,7 +81,6 @@ module.exports = function (app, addon) {
 
     // special handling for push events
     if (event === 'push' && data.commits && data.commits.length === 0) {
-      res.send(200);
       return;
     }
 
@@ -93,7 +93,6 @@ module.exports = function (app, addon) {
       })
       .catch(function(err){
         addon.logger.error(404, err);
-        res.send(404);
       });
   });
 
