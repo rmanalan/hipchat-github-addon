@@ -84,7 +84,7 @@ module.exports = function (app, addon) {
       return;
     }
 
-    console.log(require('util').inspect(data, {colors:true, depth:4}));
+    // console.log(require('util').inspect(data, {colors:true, depth:4}));
     addon.logger.info('Received',event);
 
     shouldMsgBeSent(data.repository.id, event)
