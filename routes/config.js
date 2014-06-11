@@ -222,7 +222,9 @@ module.exports = function(app, addon) {
   });
 
   app.get('/repos/search', addon.authenticate(), function(req, res){
-    var path = '/search/repositories?q=' + encodeURIComponent(req.query.q).replace(/%20/g, '+');
+    var userName = 'user:'+req.query.q.split('/')[0];
+    var repo = encodeURIComponent(req.query.q.split('/')[1]).replace(/%20/g, '+');
+    var path = '/search/repositories?q=' + [repo, userName].join('+');
     gh.get(path, req.clientInfo.githubAccessToken)
       .then(function(results){
         res.json({ results: results.body.items.map(function(i){
