@@ -224,6 +224,7 @@ module.exports = function(app, addon) {
   app.get('/repos/search', addon.authenticate(), function(req, res){
     var userName = 'user:'+req.query.q.split('/')[0];
     var repo = encodeURIComponent(req.query.q.split('/')[1]).replace(/%20/g, '+');
+    console.log('/search/repositories?q=' + [repo, userName].join('+'));
     var path = '/search/repositories?q=' + [repo, userName].join('+');
     gh.get(path, req.clientInfo.githubAccessToken)
       .then(function(results){
