@@ -17,7 +17,7 @@ module.exports = function (app, addon) {
         'text/html': function () {
           res.redirect(addon.descriptor.links.homepage);
         },
-        'application/xml': function () {
+        'application/json': function () {
           res.redirect('/atlassian-connect.json');
         }
       });
