@@ -222,10 +222,16 @@ module.exports = function(app, addon) {
   });
 
   app.get('/repos/search', addon.authenticate(), function(req, res){
+    var query = "";
     var userName = 'user:'+req.query.q.split('/')[0];
-    var repo = encodeURIComponent(req.query.q.split('/')[1]).replace(/%20/g, '+');
-    console.log('/search/repositories?q=' + [repo, userName].join('+'));
-    var path = '/search/repositories?q=' + [repo, userName].join('+');
+    var repo = encodeURIComponent(req.query.q.split('/')[1]||"").replace(/%20/g, '+');
+    if (repo !== '') {
+      query = [repo, userName].join('+');
+    } else {
+      query = userName;
+    }
+    console.log(query);
+    var path = '/search/repositories?q=' + query;
     gh.get(path, req.clientInfo.githubAccessToken)
       .then(function(results){
         res.json({ results: results.body.items.map(function(i){
