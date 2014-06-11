@@ -148,8 +148,8 @@ module.exports = function(app, addon) {
           errCode = newHook.statusCode;
           if (newHook.body.message == 'Not Found') {
             throw {
-              title: "Can't find that repository",
-              msg: "The repository you entered doesn't exist or you don't have admin access to it."
+              title: "Can't find repository",
+              msg: "The repository you entered either does not exist or you don't have admin access to it."
             }
           } else {
             throw newHook.body;
