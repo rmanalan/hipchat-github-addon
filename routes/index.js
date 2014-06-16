@@ -88,6 +88,8 @@ module.exports = function (app, addon) {
     addon.logger.info('Received',event);
     addon.logger.info('Data',data);
 
+    if (data.zen) { return; } // GH ping event
+
     shouldMsgBeSent(data.repository.id, event)
       .then(function(subscription){
         send(render(event, data), subscription);
