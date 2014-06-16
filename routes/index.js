@@ -86,6 +86,7 @@ module.exports = function (app, addon) {
 
     // console.log(require('util').inspect(data, {colors:true, depth:4}));
     addon.logger.info('Received',event);
+    addon.logger.info('Data',data);
 
     shouldMsgBeSent(data.repository.id, event)
       .then(function(subscription){
