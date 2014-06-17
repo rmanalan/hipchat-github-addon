@@ -234,10 +234,10 @@ module.exports = function(app, addon) {
     var path = '/search/repositories?q=' + query;
     gh.get(path, req.clientInfo.githubAccessToken)
       .then(function(results){
-        if (!('errors' in results.body)) {
+        if ('errors' in results.body) {
+          console.log(999, results.body);
           res.json({ results: [] });
         } else {
-          console.log(999, results.body);
           res.json({ results: results.body.items.map(function(i){
             return {
               name: i.full_name,
