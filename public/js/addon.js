@@ -1,11 +1,4 @@
 /* add-on script */
-function poptastic(url) {
-    var newWindow = window.open(url, 'name', 'height=768,width=1024');
-    if (window.focus) {
-        newWindow.focus();
-    }
-}
-
 var dialog;
 HipChat.require('env', function(env){
     dialog = env;
@@ -79,6 +72,14 @@ app.controller('MainCtrl',
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
             dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
+
+            $scope.login = function(token){
+                var newWindow = window.open('/auth/github?signed_request=' + token, 'name', 'height=768,width=1024');
+                if (window.focus) {
+                    newWindow.focus();
+                }
+                return false;
+            }
 
             $scope.repoNameValid = function(repoName){
                 return /\//.test(repoName);
