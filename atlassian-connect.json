@@ -23,12 +23,6 @@
         },
         "configurable": {
              "url": "{{localBaseUrl}}/config"
-        },
-        "webhook": {
-            "url": "{{localBaseUrl}}/webhook",
-            "pattern": "/gh",
-            "event": "room_message",
-            "name": "GitHub command"
         }
     }
 }
