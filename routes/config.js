@@ -97,13 +97,13 @@ module.exports = function(app, addon) {
     gh.get('/repos/' + user + '/' + repoName, req.clientInfo.githubAccessToken)
       .then(function(resp){
         // All registered hooks
-        addon.logger.info('> Getting repo details');
+        // addon.logger.info('> Getting repo details');
         repo = resp.body;
         return addon.settings.get('repos:'+repo.id, req.clientInfo.clientKey)
           .then(function(subscription){
             if(subscription) {
               // subscription already exists
-              addon.logger.error(subscription);
+              // addon.logger.error(subscription);
               throw {
                 title: 'Subscription already exists',
                 msg: 'Subscription to ' + subscription.full_name + ' already exists'
@@ -118,7 +118,7 @@ module.exports = function(app, addon) {
         // Delete existing HipChat hook if it exists
         var hcHook = _.find(hooks.body, {name: 'hipchat'});
         if (hcHook) {
-          addon.logger.info('> Deleting HipChat hook');
+          // addon.logger.info('> Deleting HipChat hook');
           return gh.delete('/repos/' + user + '/' + repoName + '/hooks/' + hcHook.id, req.clientInfo.githubAccessToken);
         }
       })
@@ -129,7 +129,7 @@ module.exports = function(app, addon) {
           return h.name === 'web' && re.test(h.config.url);
         });
         if (webhooks.length > 0) {
-          addon.logger.info('> Deleting HC/GH add-on hook');
+          // addon.logger.info('> Deleting HC/GH add-on hook');
           var promises = webhooks.map(function(webhook){
             return gh.delete('/repos/' + user + '/' + repoName + '/hooks/' + webhook.id, req.clientInfo.githubAccessToken);
           });
@@ -139,7 +139,7 @@ module.exports = function(app, addon) {
       })
       .then(function(){
         // Create new hook
-        addon.logger.info('> Creating new HC/GH add-on hook');
+        // addon.logger.info('> Creating new HC/GH add-on hook');
         var data = newHook(req.context.roomId, req.clientInfo.clientKey, req.clientInfo.oauthSecret);
         return gh.post('/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken, data);
       })
@@ -162,7 +162,7 @@ module.exports = function(app, addon) {
         // Register new hook
         var repoToSave = newRepo(repo);
         repoToSave.gh_id = newHook.body.id;
-        addon.logger.info('> Saving new subscription');
+        // addon.logger.info('> Saving new subscription');
         addon.settings.set('repos:' + repoToSave.id, repoToSave, req.clientInfo.clientKey).then(function(d){
           res.json(repoToSave);
         });
@@ -183,11 +183,11 @@ module.exports = function(app, addon) {
   app.delete('/repos/:id', addon.authenticate(), function(req, res){
     addon.settings.get('repos:' + req.params.id, req.clientInfo.clientKey)
       .then(function(d){
-        addon.logger.info('> Deleting webhook on GitHub');
+        // addon.logger.info('> Deleting webhook on GitHub');
         return gh.delete('/repos/' + d.full_name + '/hooks/' + d.gh_id, req.clientInfo.githubAccessToken);
       })
       .then(function(){
-        addon.logger.info('> Deleting subscription');
+        // addon.logger.info('> Deleting subscription');
         addon.settings.del('repos:' + req.params.id, req.clientInfo.clientKey).then(function(d){
           res.json(d);
         });
@@ -230,12 +230,12 @@ module.exports = function(app, addon) {
     } else {
       query = userName;
     }
-    console.log(query);
+    // console.log(query);
     var path = '/search/repositories?q=' + query;
     gh.get(path, req.clientInfo.githubAccessToken)
       .then(function(results){
         if ('errors' in results.body) {
-          console.log(999, results.body);
+          // console.log(999, results.body);
           res.json({ results: [] });
         } else {
           res.json({ results: results.body.items.map(function(i){

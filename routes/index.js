@@ -85,8 +85,8 @@ module.exports = function (app, addon) {
     }
 
     // console.log(require('util').inspect(data, {colors:true, depth:4}));
-    addon.logger.info('Received',event);
-    addon.logger.info('Data',data);
+    // addon.logger.info('Received',event);
+    // addon.logger.info('Data',data);
 
     if (data.zen) { return; } // GH ping event
 
