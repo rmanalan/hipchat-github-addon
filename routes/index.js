@@ -84,6 +84,12 @@ module.exports = function (app, addon) {
       return;
     }
 
+    // skip label events... annoys people
+    if (event === 'labeled') {
+      return;
+    }
+
+
     // console.log(require('util').inspect(data, {colors:true, depth:4}));
     // addon.logger.info('Received',event);
     // addon.logger.info('Data',data);
