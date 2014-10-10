@@ -96,9 +96,31 @@ module.exports = function (app, addon) {
 
     if (data.zen) { return; } // GH ping event
 
+    function deployStatusColorOverride(data, subscription){
+      if ("deployment_status" in data) {
+        switch (data.deployment_status.state) {
+          case 'success':
+            subscription.options.color = 'green';
+            break;
+          case 'pending':
+            subscription.options.color = 'yellow';
+            break;
+          case 'error':
+          case 'failure':
+            subscription.options.color = 'red';
+            break;
+          default:
+            subscription.options.color = 'yellow';
+        }
+      } else if ("deployment" in data) {
+        subscription.options.color = 'yellow';
+      }
+      return subscription;
+    }
+
     shouldMsgBeSent(data.repository.id, event)
       .then(function(subscription){
-        send(render(event, data), subscription);
+        send(render(event, data), deployStatusColorOverride(data, subscription));
       })
       .catch(function(err){
         addon.logger.error(404, err);
