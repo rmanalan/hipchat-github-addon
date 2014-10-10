@@ -1,1 +1,1 @@
-<a href="{{sender.html_url}}">{{sender.login}}</a> is deploying <a href="{{repository.html_url}}">{{name}}</a> ({{trim sha}}): {{description}}
+<a href="{{sender.html_url}}">{{sender.login}}</a> is deploying <a href="{{repository.html_url}}">{{repository.full_name}}</a> ({{trim deployment.sha}}){{#if deployment.environment}} to {{deployment.environment}}{{/if}}
