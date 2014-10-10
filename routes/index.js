@@ -85,7 +85,7 @@ module.exports = function (app, addon) {
     }
 
     // skip label events... annoys people
-    if (event === 'labeled') {
+    if (data.action === 'labeled' || data.action === 'unlabeled') {
       return;
     }
 
