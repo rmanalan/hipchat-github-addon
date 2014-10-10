@@ -1,1 +1,1 @@
-<a href="{{sender.html_url}}">{{sender.login}}</a> is deploying <a href="{{repository.html_url}}">{{repository.full_name}}</a> ({{trim deployment.sha}}){{#if deployment.environment}} to {{deployment.environment}}{{/if}}
+<a href="{{sender.html_url}}">{{sender.login}}</a> is deploying <a href="{{repository.html_url}}">{{repository.full_name}}</a> (<a href="https://github.com/{{repository.full_name}}/commit/{{deployment.sha}}">{{trim deployment.sha}}</a>){{#if deployment.environment}} to {{deployment.environment}}{{/if}}
