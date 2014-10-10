@@ -1,1 +1,1 @@
-<a href="{{target_url}}">{{deployment.description}}</a>: {{description}} (#{{id}})
+<a href="{{deployment_status.creator.login}}">{{deployment_status.creator.html_url}}</a> is deploying <a href="{{deployment.repository_url}}">{{deployment.description}} ({{deployment.environment}})</a>: {{deployment_status.description}} <a href="{{deployment_status.target_url}}">#{{deployment_status.id}})</a>
