@@ -46,7 +46,7 @@ module.exports = function(app, addon) {
         secret: secret,
         content_type: 'json',
         ssl_version: '3.0',
-        insecure_ssl: false
+        insecure_ssl: 1
       },
       events: [
         "commit_comment",
