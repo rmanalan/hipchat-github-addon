@@ -45,7 +45,6 @@ module.exports = function(app, addon) {
         url: addon.config.localBaseUrl() + '/incoming?r=' + roomId + '&i=' + token,
         secret: secret,
         content_type: 'json',
-        ssl_version: '3.0',
         insecure_ssl: 1
       },
       events: [
