@@ -44,8 +44,7 @@ module.exports = function(app, addon) {
       config: {
         url: addon.config.localBaseUrl() + '/incoming?r=' + roomId + '&i=' + token,
         secret: secret,
-        content_type: 'json',
-        insecure_ssl: 1
+        content_type: 'json'
       },
       events: [
         "commit_comment",
