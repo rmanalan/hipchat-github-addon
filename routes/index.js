@@ -84,6 +84,11 @@ module.exports = function (app, addon) {
       return;
     }
 
+    // limit # of commits to 5
+    if (event === 'push' && data.commits && data.commits.length > 5) {
+      data.commits = data.commits.slice(0,5);
+    }
+
     // skip label events... annoys people
     if (data.action === 'labeled' || data.action === 'unlabeled') {
       return;
