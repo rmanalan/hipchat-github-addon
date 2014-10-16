@@ -79,14 +79,19 @@ module.exports = function (app, addon) {
     var event = req.headers['x-github-event'];
     var data = req.body;
 
-    // special handling for push events
-    if (event === 'push' && data.commits && data.commits.length === 0) {
-      return;
-    }
 
     // limit # of commits to 5
-    if (event === 'push' && data.commits && data.commits.length > 5) {
-      data.commits = data.commits.slice(0,5);
+    if (event === 'push' && data.commits){
+      if (data.commits.length === 0) {
+        return;
+      }
+
+      data.commitsLength = data.commits.length;
+      data.commitsLengthMore = false;
+      if (data.commits.length > 5) {
+        data.commits = data.commits.slice(0,5);
+        data.commitsLengthMore = true;
+      }
     }
 
     // skip label events... annoys people
