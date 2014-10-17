@@ -52,7 +52,7 @@ module.exports = function (app, addon) {
     }
 
     // TODO support branch filtering
-    function shouldMsgBeSent(id, evt){
+    function shouldMsgBeSent(id, evt, payload){
       return new RSVP.Promise(function(resolve, reject){
         addon.settings.get('repos:'+id, req.query.i)
           .then(function(subscription){
@@ -63,6 +63,15 @@ module.exports = function (app, addon) {
             }
             if (subscription.event.branchtag && (evt === 'create' || evt === 'delete')) {
               resolve(subscription);
+            } else if (subscription.event.push) {
+              var branches = subscription.options.restrict_to_branch.split(',');
+              for (i in branches) {
+                var re = new RegExp(branches[i]);
+                if (re.test(payload.ref)) {
+                  resolve(subscription);
+                  break;
+                }
+              }
             } else if (subscription.event[evt]){
               resolve(subscription);
             } else {
@@ -128,7 +137,7 @@ module.exports = function (app, addon) {
       return subscription;
     }
 
-    shouldMsgBeSent(data.repository.id, event)
+    shouldMsgBeSent(data.repository.id, event, data)
       .then(function(subscription){
         send(render(event, data), deployStatusColorOverride(data, subscription));
       })
