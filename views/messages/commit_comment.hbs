@@ -1,1 +1,2 @@
 <a href="{{comment.user.html_url}}">{{comment.user.login}}</a>&nbsp;<a href="{{comment.html_url}}">commented</a> on {{comment.path}} ({{trim comment.commit_id}}) for {{repository.full_name}}
+{{#if body}}<pre>{{summarize body}}</pre>{{/if}}
