@@ -66,7 +66,7 @@ module.exports = function (app, addon) {
             } else if (subscription.event.push && (evt === 'push')) {
               var branches = subscription.options.restrict_to_branch.split(',');
               for (i in branches) {
-                var re = new RegExp(branches[i]);
+                var re = new RegExp(branches[i].replace(/^\s+|\s+$/g, ''));
                 if (re.test(payload.ref)) {
                   resolve(subscription);
                   break;
