@@ -1,0 +1,5 @@
+<a href="{{deployment_status.creator.html_url}}">{{deployment_status.creator.login}}</a> deploying <a href="{{repository.html_url}}">{{repository.full_name}}</a> (<a href="https://github.com/{{repository.full_name}}/commit/{{deployment.sha}}">{{trim deployment.sha}}</a>){{#if deployment.environment}} to {{deployment.environment}}{{/if}}:
+{{#ifCond deployment_status.state 'success'}}finished successfully {{#if deployment_status.target_url}}&rarr; <a href="{{deployment_status.target_url}}"><i>{{deployment_status.target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond deployment_status.state 'pending'}}currently pending {{#if deployment_status.target_url}}&rarr; <a href="{{deployment_status.target_url}}"><i>{{deployment_status.target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond deployment_status.state 'error'}}encountered an error {{#if deployment_status.target_url}}&rarr; <a href="{{deployment_status.target_url}}"><i>{{deployment_status.target_url}}</i></a>{{/if}}{{/ifCond}}
+{{#ifCond deployment_status.state 'failure'}}failed {{#if deployment_status.target_url}}&rarr; <a href="{{deployment_status.target_url}}"><i>{{deployment_status.target_url}}</i></a>{{/if}}{{/ifCond}}

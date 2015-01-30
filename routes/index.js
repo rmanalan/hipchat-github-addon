@@ -139,7 +139,7 @@ module.exports = function (app, addon) {
 
     shouldMsgBeSent(data.repository.id, event, data)
       .then(function(subscription){
-        send(render(event, data), deployStatusColorOverride(data, subscription));
+        send(render(event, data, subscription.options.terseComments), deployStatusColorOverride(data, subscription));
       })
       .catch(function(err){
         addon.logger.error(404, err);
