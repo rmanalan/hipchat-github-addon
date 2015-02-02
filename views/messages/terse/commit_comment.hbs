@@ -1,0 +1,1 @@
+<a href="{{comment.user.html_url}}">{{comment.user.login}}</a> commented on {{#ifIsTruthy comment.path}}<a href="{{comment.html_url}}">{{ltrim comment.path length=30}}</a> (<a href="{{comment.html_url}}">{{trim comment.commit_id}}</a>){{else}}commit <a href="{{comment.html_url}}">{{trim comment.commit_id}}</a>{{/ifIsTruthy}}

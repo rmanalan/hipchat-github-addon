@@ -33,7 +33,8 @@ module.exports = function(app, addon) {
       options: {
         notify: false,
         restrict_to_branch: '',
-        color: 'yellow'
+        color: 'yellow',
+        terseComments: false
       }
     }
   }

@@ -136,8 +136,16 @@
                         </fieldset>
                         <fieldset class="group">
                             <div class="checkbox">
-                                <input class="checkbox" type="checkbox" name="notify" ng-model="repo.options.notify" ng-checked="repo.options.notify" ng-change="updateSubscription(repo)">
-                                <label for="notify">Notify members of room</label>
+                                <label for="notify">
+                                <input class="checkbox" type="checkbox" id="notify" name="notify" ng-model="repo.options.notify" ng-checked="repo.options.notify" ng-change="updateSubscription(repo)">
+                                Notify members of room
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label for="terseComments">
+                                <input class="checkbox" type="checkbox" id="terseComments" name="terseComments" ng-model="repo.options.terseComments" ng-checked="repo.options.terseComments" ng-change="updateSubscription(repo)">
+                                Use terse messaging in room
+                                </label>
                             </div>
                         </fieldset>
                         <button class="aui-button aui-button-subtle collapse-config" ng-click="hideConfig()">
