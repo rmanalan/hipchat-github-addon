@@ -50,6 +50,7 @@ module.exports = function (app, addon) {
         }
         clientInfo.githubUserId = req.user.id;
         clientInfo.githubAccessToken = req.user.accessToken;
+        clientInfo.baseUrl = addon.API_BASE_URI;
         addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
           res.render('auth_success');
         });
@@ -59,16 +60,71 @@ module.exports = function (app, addon) {
       });
     }
   );
+  
+  app.get('/auth/github-enterprise',
+	addon.authenticate(),
+	function(req, res){
+      var signedRequest = req.query.signed_request;
+      var unverifiedClaims = jwt.decode(signedRequest, null, true);
+      var issuer = unverifiedClaims.iss;
+      var clientDetails = {"domain": req.query.domain, "accessToken": req.query.access_token, "userId": "3"};
+      
+      addon.loadClientInfo(issuer).then(function(clientInfo){
+          // verify the signed request
+          if (clientInfo === null) {
+            return send(400, "Request can't be verified without an OAuth secret");
+          }
+          var verifiedClaims = jwt.decode(signedRequest, clientInfo.oauthSecret);
+
+          // JWT expiry can be overriden using the `validityInMinutes` config.
+          // If not set, will use `exp` provided by HC server (default is 1 hour)
+          var now = Math.floor(Date.now()/1000);;
+          if (addon.config.maxTokenAge()) {
+            var issuedAt = verifiedClaims.iat;
+            var expiresInSecs = addon.config.maxTokenAge() / 1000;
+            if(issuedAt && now >= (issuedAt + expiresInSecs)){
+              send(401, 'Authentication request has expired.');
+              return;
+            }
+          } else {
+            var expiry = verifiedClaims.exp;
+            if (expiry && now >= expiry) { // default is 1 hour
+              send(401, 'Authentication request has expired.');
+              return;
+            }
+          }
+          
+          clientInfo.githubUserId = "43711";
+          clientInfo.githubAccessToken = clientDetails['accessToken'];
+          clientInfo.baseUrl = clientDetails['domain'];
+          addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
+            res.render('auth_success');
+          });
+
+        }, function(err) {
+          return send(400, err.message);
+        });      
+   	}
+  );
 
   return {
     ensureAuthenticated: function() {
       return function (req, res, next) {
-        http.get({
-          uri: addon.API_BASE_URI + '/user',
+    	  if (!req.clientInfo.baseUrl){
+    		  res.render('login');
+              return;
+    	  }
+
+    	http.get({
+          uri: req.clientInfo.baseUrl + '/user',
           qs: {
             access_token: req.clientInfo.githubAccessToken
-          }
+          },
+          rejectUnauthorized:false
         }, function(err, resp, body){
+        	if (resp.statusCode == 200){
+        		return next();
+        	}
           if(err){
             res.render('login');
             return;

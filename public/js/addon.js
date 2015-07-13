@@ -68,19 +68,34 @@ app.controller('MainCtrl',
         '$scope',
         'repoService',
         function($scope, Repo){
-            $scope.error = {};
+        	$scope.githubLogin = true;
+        	$scope.enterpriseDetail = {}
+        	$scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
             dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
-
+                        
             $scope.login = function(token){
-                var newWindow = window.open('/auth/github?signed_request=' + token, 'name', 'height=768,width=1024');
-                if (window.focus) {
-                    newWindow.focus();
-                }
-                return false;
+				var url = '/auth/github?signed_request=' + token;
+				if (! $scope.githubLogin){
+					url = '/auth/github-enterprise?signed_request=' + token + 
+							"&domain=" + $scope.enterpriseDetail.domain + '&access_token=' + $scope.enterpriseDetail.accessToken;
+				}
+				var newWindow = window.open(url, 'name', 'height=768,width=1024');
+				if (window.focus) {
+					newWindow.focus();
+				}
+				return false;
             }
-
+            
+            $scope.enterpriseLogin = function(){
+            	$scope.githubLogin = true;
+            }
+            
+            $scope.getLogin = function(){
+            	$scope.githubLogin = false;
+            }
+            
             $scope.repoNameValid = function(repoName){
                 return /\//.test(repoName);
             }

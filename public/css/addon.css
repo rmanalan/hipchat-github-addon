@@ -93,3 +93,33 @@ button, input {
   white-space: nowrap;
   max-width: 495px;
 }
+.config-head {
+  margin-top: 8px;
+}
+.connect-github {
+  margin-top: 28px !important;
+}
+.connect-enterprise {
+  margin-top: 15px !important;
+}
+.long-text {
+  max-width: 390px !important;
+}
+.go-back-github {
+  margin-left: 13px;
+}
+.login-form {
+  margin-top: 9px !important;
+}
+.personal-token {
+  margin-top: 11px !important;
+}
+.token-text {
+  margin-right: 230px !important;
+}
+.connect-enterprise {
+  margin-top: 16px !important;	
+}
+.cursor-pointer {
+  cursor: pointer;
+}

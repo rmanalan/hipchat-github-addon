@@ -1,14 +1,44 @@
 {{!< layout}}
-<div class="centered">
+<div class="centered" ng-cloak>
     <div class="aui-group">
-        <img src="images/Octocat.jpg" alt="Octocat" width="300px">
+        <img src="images/Octocat.jpg" alt="Octocat" width="250px">
         <br>
-        <h2>Source control and code management</h2>
+        <h2 class="config-head">Source control and code management</h2>
     </div>
-    <div class="aui-group">
-        <div class="aui-item">
-            <a ng-click="login('{{signed_request}}')" class="aui-button aui-button-primary ">Authenticate with GitHub</a>
-        </div>
-    </div>
-
+    <div ng-show="githubLogin">
+	    <form class="aui login-form">
+		    <div class="aui-group connect-github">
+		        <div class="aui-item">
+		        	<input type="submit" ng-click="login('{{signed_request}}')"
+		        		 class="aui-button aui-button-primary" value="Connect GitHub" />
+		        </div>
+		    </div>
+			<div class="aui-group connect-enterprise">
+		        <div class="aui-item">
+		            <a ng-click="getLogin()" class="cursor-pointer">Or, if you are using Github Enterprise, click here.</a>
+		        </div>
+		    </div>
+		</form>
+	</div>
+	<div ng-hide="githubLogin">
+		<form class="aui login-form" ng-submit="login('{{signed_request}}')">
+			<div>
+				<span>Let us know where we can find your GitHub Enterprise Server:</span><br>
+				<input type="text" ng-model="enterpriseDetail.domain" class="text long-text" required
+					placeholder='http://www.github.com' maxlength="255" />
+				<br>
+			</div>
+			<div class="personal-token">
+				<span class="token-text">Personal Access Token:</span><br>
+				<input type="text" ng-model="enterpriseDetail.accessToken" class="text long-text" required maxlength="255" />
+			</div>
+		    <div class="aui-group connect-enterprise">
+		        <div class="aui-item">
+		            <input type="submit"
+	        		 class="aui-button aui-button-primary" value="Connect GitHub" />	        		 
+		            <a ng-click="enterpriseLogin()" class="go-back-github cursor-pointer">Cancel</a>
+		        </div>
+		    </div>
+		</form>
+	</div>
 </div>
