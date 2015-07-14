@@ -1,5 +1,11 @@
 {{!< layout}}
 <div class="centered" ng-cloak>
+	{{#if error}}
+		<div ng-hide="githubLogin" ng-init="notAbleTofindRepo(error)" class="aui-message aui-message-warning">
+		    <p>Unable to connect to an enterprise Github account. Please check the URL you have entered or try a new one.</p>
+		    <span class="aui-icon icon-close close-warning" ng-click="removeWarning()" role="button" tabindex="0"></span>
+		</div>
+	{{/if}}
     <div class="aui-group">
         <img src="images/Octocat.jpg" alt="Octocat" width="250px">
         <br>
@@ -30,7 +36,8 @@
 			</div>
 			<div class="personal-token">
 				<span class="token-text">Personal Access Token:</span><br>
-				<input type="text" ng-model="enterpriseDetail.accessToken" class="text long-text" required maxlength="255" />
+				<input type="text" ng-model="enterpriseDetail.accessToken" class="text long-text help-access-token"
+					required maxlength="255" />
 			</div>
 		    <div class="aui-group connect-enterprise">
 		        <div class="aui-item">

@@ -123,3 +123,14 @@ button, input {
 .cursor-pointer {
   cursor: pointer;
 }
+.help-access-token {
+  background: url('/images/Help-Icon.png') 99% center no-repeat !important;
+}
+.close-warning {
+  cursor: pointer;
+  left: auto;
+  opacity: 1;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}

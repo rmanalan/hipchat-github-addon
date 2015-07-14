@@ -13,6 +13,11 @@ module.exports = function (app, addon) {
   function authWithQueryAsState(req, res, next) {
     addon.passport.authenticate('github',{ session: false, scope: ['repo'], state: qs.stringify(req.query) })(req, res, next);
   }
+  
+  function getDomain(url){
+	  var indexOfDot = url.lastIndexOf(".");
+	  return url.substring(0, indexOfDot) + url.substring(indexOfDot).split('/')[0] + '/api/v3'
+  }
 
   app.get('/auth/github', authWithQueryAsState);
 
@@ -33,7 +38,7 @@ module.exports = function (app, addon) {
 
         // JWT expiry can be overriden using the `validityInMinutes` config.
         // If not set, will use `exp` provided by HC server (default is 1 hour)
-        var now = Math.floor(Date.now()/1000);;
+        var now = Math.floor(Date.now()/1000);
         if (addon.config.maxTokenAge()) {
           var issuedAt = verifiedClaims.iat;
           var expiresInSecs = addon.config.maxTokenAge() / 1000;
@@ -67,7 +72,7 @@ module.exports = function (app, addon) {
       var signedRequest = req.query.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
-      var clientDetails = {"domain": req.query.domain, "accessToken": req.query.access_token, "userId": "3"};
+      var clientDetails = {"domain": getDomain(req.query.domain), "accessToken": req.query.access_token, "userId": 3};
       
       addon.loadClientInfo(issuer).then(function(clientInfo){
           // verify the signed request
@@ -94,7 +99,7 @@ module.exports = function (app, addon) {
             }
           }
           
-          clientInfo.githubUserId = "43711";
+          clientInfo.githubUserId = clientDetails['userId'];
           clientInfo.githubAccessToken = clientDetails['accessToken'];
           clientInfo.baseUrl = clientDetails['domain'];
           addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
@@ -122,17 +127,18 @@ module.exports = function (app, addon) {
           },
           rejectUnauthorized:false
         }, function(err, resp, body){
-        	if (resp.statusCode == 200){
-        		return next();
-        	}
-          if(err){
-            res.render('login');
+          var param = {};
+          if(req.clientInfo.baseUrl != addon.API_BASE_URI){
+      		param["error"] = true
+      	  }
+          if(err){  
+            res.render('login', param);
             return;
           }
           if (req.clientInfo.githubUserId && req.clientInfo.githubUserId === body.id) {
             return next();
           } else {
-            res.render('login');
+            res.render('login', param);
             return;
           }
         });

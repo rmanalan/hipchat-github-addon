@@ -88,6 +88,12 @@ app.controller('MainCtrl',
 				return false;
             }
             
+            $scope.notAbleTofindRepo = function(error){
+            	if(error){
+            		$scope.githubLogin = false;
+            	}
+            }
+            
             $scope.enterpriseLogin = function(){
             	$scope.githubLogin = true;
             }
@@ -116,6 +122,10 @@ app.controller('MainCtrl',
                     angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 });
                 return false;
+            }
+            
+            $scope.removeWarning = function(){
+            	angular.element(document.querySelector('.close-warning')).parent().remove();
             }
 
             $scope.updateSubscription = function(repo){
