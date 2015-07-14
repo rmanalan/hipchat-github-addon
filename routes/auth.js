@@ -18,6 +18,16 @@ module.exports = function (app, addon) {
 	  var indexOfDot = url.lastIndexOf(".");
 	  return url.substring(0, indexOfDot) + url.substring(indexOfDot).split('/')[0] + '/api/v3'
   }
+  
+  function setGithubUserId(signedRequest, userId){
+      var unverifiedClaims = jwt.decode(signedRequest, null, true);
+      var issuer = unverifiedClaims.iss;
+      addon.loadClientInfo(issuer).then(function(clientInfo){
+    	  clientInfo.githubUserId = userId;
+    	  addon.settings.set('clientInfo', clientInfo, issuer);
+      });
+      return;
+  }
 
   app.get('/auth/github', authWithQueryAsState);
 
@@ -72,7 +82,7 @@ module.exports = function (app, addon) {
       var signedRequest = req.query.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
-      var clientDetails = {"domain": getDomain(req.query.domain), "accessToken": req.query.access_token, "userId": 3};
+      var clientDetails = {"domain": getDomain(req.query.domain), "accessToken": req.query.access_token};
       
       addon.loadClientInfo(issuer).then(function(clientInfo){
           // verify the signed request
@@ -99,7 +109,6 @@ module.exports = function (app, addon) {
             }
           }
           
-          clientInfo.githubUserId = clientDetails['userId'];
           clientInfo.githubAccessToken = clientDetails['accessToken'];
           clientInfo.baseUrl = clientDetails['domain'];
           addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
@@ -135,6 +144,10 @@ module.exports = function (app, addon) {
             res.render('login', param);
             return;
           }
+          if(body.id && !req.clientInfo.githubUserId){
+        	  setGithubUserId(req.query.signed_request, body.id);
+        	  return next();
+    	  }
           if (req.clientInfo.githubUserId && req.clientInfo.githubUserId === body.id) {
             return next();
           } else {
