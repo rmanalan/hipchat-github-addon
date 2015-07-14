@@ -19,6 +19,14 @@ module.exports = function (app, addon) {
 	  return url.substring(0, indexOfDot) + url.substring(indexOfDot).split('/')[0] + '/api/v3'
   }
   
+  function getBaseUrl(clientInfo){
+	  var baseUrl = addon.API_BASE_URI;
+	  if(clientInfo.baseUrl){
+		  baseUrl = clientInfo.baseUrl;
+	  }
+	  return baseUrl;
+  } 
+  
   function setGithubUserId(signedRequest, userId){
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
@@ -130,7 +138,7 @@ module.exports = function (app, addon) {
     	  }
 
     	http.get({
-          uri: req.clientInfo.baseUrl + '/user',
+          uri: getBaseUrl(req.clientInfo) + '/user',
           qs: {
             access_token: req.clientInfo.githubAccessToken
           },

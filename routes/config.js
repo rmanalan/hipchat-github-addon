@@ -74,6 +74,14 @@ module.exports = function(app, addon) {
       'active': true
     }
   }
+  
+  function getBaseUrl(clientInfo){
+	  var baseUrl = addon.API_BASE_URI;
+	  if(clientInfo.baseUrl){
+		  baseUrl = clientInfo.baseUrl;
+	  }
+	  return baseUrl;
+  } 
 
   // Config page
   app.get('/config',
@@ -93,7 +101,7 @@ module.exports = function(app, addon) {
     var hooks;
     var errCode = 500;
     // Get repo details
-    gh.get(req.clientInfo.baseUrl + '/repos/' + user + '/' + repoName, req.clientInfo.githubAccessToken)
+    gh.get(getBaseUrl(req.clientInfo) + '/repos/' + user + '/' + repoName, req.clientInfo.githubAccessToken)
       .then(function(resp){
         // All registered hooks
         // addon.logger.info('> Getting repo details');
@@ -108,7 +116,7 @@ module.exports = function(app, addon) {
                 msg: 'Subscription to ' + subscription.full_name + ' already exists'
               };
             } else {
-              return gh.get(req.clientInfo.baseUrl + '/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken);
+              return gh.get(getBaseUrl(req.clientInfo) + '/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken);
             }
           });
       })
@@ -118,7 +126,7 @@ module.exports = function(app, addon) {
         var hcHook = _.find(hooks.body, {name: 'hipchat'});
         if (hcHook) {
           // addon.logger.info('> Deleting HipChat hook');
-          return gh.delete(req.clientInfo.baseUrl + '/repos/' + user + '/' + repoName + '/hooks/' + hcHook.id, req.clientInfo.githubAccessToken);
+          return gh.delete(getBaseUrl(req.clientInfo) + '/repos/' + user + '/' + repoName + '/hooks/' + hcHook.id, req.clientInfo.githubAccessToken);
         }
       })
       .then(function(){
@@ -140,7 +148,7 @@ module.exports = function(app, addon) {
         // Create new hook
         // addon.logger.info('> Creating new HC/GH add-on hook');
         var data = newHook(req.context.roomId, req.clientInfo.clientKey, req.clientInfo.oauthSecret);
-        return gh.post(req.clientInfo.baseUrl + '/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken, data);
+        return gh.post(getBaseUrl(req.clientInfo) + '/repos/' + user + '/' + repoName + '/hooks', req.clientInfo.githubAccessToken, data);
       })
       .then(function(newHook){
         if(newHook.statusCode !== 201){
@@ -183,7 +191,7 @@ module.exports = function(app, addon) {
     addon.settings.get('repos:' + req.params.id, req.clientInfo.clientKey)
       .then(function(d){
         // addon.logger.info('> Deleting webhook on GitHub');
-        return gh.delete(req.clientInfo.baseUrl + '/repos/' + d.full_name + '/hooks/' + d.gh_id, req.clientInfo.githubAccessToken);
+        return gh.delete(getBaseUrl(req.clientInfo) + '/repos/' + d.full_name + '/hooks/' + d.gh_id, req.clientInfo.githubAccessToken);
       })
       .then(function(){
         // addon.logger.info('> Deleting subscription');
@@ -231,7 +239,7 @@ module.exports = function(app, addon) {
     }
     // console.log(query);
     var path = '/search/repositories?q=' + query;
-    gh.get(req.clientInfo.baseUrl + path, req.clientInfo.githubAccessToken)
+    gh.get(getBaseUrl(req.clientInfo) + path, req.clientInfo.githubAccessToken)
       .then(function(results){
         if ('errors' in results.body) {
           // console.log(999, results.body);
