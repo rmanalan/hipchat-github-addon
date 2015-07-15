@@ -128,7 +128,52 @@ module.exports = function (app, addon) {
         });      
    	}
   );
+  
+  app.get('/switch-acccount',
+	addon.authenticate(),
+	function(req, res){
+	  var signedRequest = req.query.signed_request;
+	  var unverifiedClaims = jwt.decode(signedRequest, null, true);
+      var issuer = unverifiedClaims.iss;
+	  
+      addon.loadClientInfo(issuer).then(function(clientInfo){
+          // verify the signed request
+          if (clientInfo === null) {
+            return send(400, "Request can't be verified without an OAuth secret");
+          }
+          var verifiedClaims = jwt.decode(signedRequest, clientInfo.oauthSecret);
 
+          // JWT expiry can be overriden using the `validityInMinutes` config.
+          // If not set, will use `exp` provided by HC server (default is 1 hour)
+          var now = Math.floor(Date.now()/1000);;
+          if (addon.config.maxTokenAge()) {
+            var issuedAt = verifiedClaims.iat;
+            var expiresInSecs = addon.config.maxTokenAge() / 1000;
+            if(issuedAt && now >= (issuedAt + expiresInSecs)){
+              send(401, 'Authentication request has expired.');
+              return;
+            }
+          } else {
+            var expiry = verifiedClaims.exp;
+            if (expiry && now >= expiry) { // default is 1 hour
+              send(401, 'Authentication request has expired.');
+              return;
+            }
+          }
+          
+          delete clientInfo['githubAccessToken'];
+          delete clientInfo['baseUrl'];
+          delete clientInfo['githubUserId:']
+          addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
+        	  res.render('login');
+          });
+        }, function(err) {
+          return send(400, err.message);
+        });
+  	}  
+  );
+  
+  
   return {
     ensureAuthenticated: function() {
       return function (req, res, next) {

@@ -88,6 +88,9 @@ module.exports = function(app, addon) {
     addon.authenticate(),
     githubAuth.ensureAuthenticated(),
     function(req, res) {
+	  if (req.clientInfo.baseUrl != addon.API_BASE_URI){
+		req.context['enterpriseUrl'] = req.clientInfo.baseUrl
+	  }
       res.render('config', req.context);
     }
   );

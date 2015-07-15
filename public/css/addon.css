@@ -123,9 +123,6 @@ button, input {
 .cursor-pointer {
   cursor: pointer;
 }
-.help-access-token {
-  background: url('/images/Help-Icon.png') 99% center no-repeat !important;
-}
 .close-warning {
   cursor: pointer;
   left: auto;
@@ -133,4 +130,27 @@ button, input {
   position: absolute;
   right: 20px;
   top: 20px;
+}
+.access-text {
+  padding-right: 31px !important;	
+}
+.help-access-token {
+  position: absolute;
+  top: 86px;
+  left: 629px;
+}
+span.help-access-token span {
+    display: none;    
+}
+span.help-access-token:hover span, span.help-access-token:focus span {
+  display: block;
+  position: absolute;
+  top: -1.8em;
+  left: 2.5em;
+  width: 134px;
+  padding: 0.2em 0.6em;
+  border: 1px solid #C8C4C1;
+  background-color: rgb(255, 255, 255);
+  color: #615F5F;
+  border-radius: 6px;
 }
