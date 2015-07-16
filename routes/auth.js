@@ -133,10 +133,6 @@ module.exports = function (app, addon) {
   return {
     ensureAuthenticated: function() {
       return function (req, res, next) {
-    	  if (!req.clientInfo.baseUrl){
-    		  res.render('login');
-              return;
-    	  }
 
     	http.get({
           uri: getBaseUrl(req.clientInfo) + '/user',
@@ -146,7 +142,7 @@ module.exports = function (app, addon) {
           rejectUnauthorized:false
         }, function(err, resp, body){
           var param = {};
-          if(req.clientInfo.baseUrl != addon.API_BASE_URI){
+          if(req.clientInfo.baseUrl && (req.clientInfo.baseUrl != addon.API_BASE_URI)){
       		param["error"] = true
       	  }
           if(err){  
