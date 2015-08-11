@@ -68,8 +68,8 @@ app.controller('MainCtrl',
         '$scope',
         'repoService',
         function($scope, Repo){
-        	$scope.githubLogin = true;
-        	$scope.enterpriseDetail = {}
+        	$scope.loginStatus = {"github": true}; 
+        	$scope.enterpriseDetail = {};
         	$scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
@@ -77,7 +77,7 @@ app.controller('MainCtrl',
                         
             $scope.login = function(token){
 				var url = '/auth/github?signed_request=' + token;
-				if (! $scope.githubLogin){
+				if (! $scope.loginStatus.github){
 					url = '/auth/github-enterprise?signed_request=' + token + 
 							"&domain=" + $scope.enterpriseDetail.domain + '&access_token=' + $scope.enterpriseDetail.accessToken;
 				}
@@ -90,16 +90,16 @@ app.controller('MainCtrl',
             
             $scope.notAbleTofindRepo = function(error){
             	if(error){
-            		$scope.githubLogin = false;
+            		$scope.loginStatus.github = false;
             	}
             }
             
             $scope.enterpriseLogin = function(){
-            	$scope.githubLogin = true;
+            	$scope.loginStatus.github = true;
             }
             
             $scope.getLogin = function(){
-            	$scope.githubLogin = false;
+            	$scope.loginStatus.github = false;
             }
             
             $scope.repoNameValid = function(repoName){

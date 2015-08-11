@@ -14,9 +14,9 @@ module.exports = function (app, addon) {
     addon.passport.authenticate('github',{ session: false, scope: ['repo'], state: qs.stringify(req.query) })(req, res, next);
   }
   
-  function getDomain(url){
-	  var indexOfDot = url.lastIndexOf(".");
-	  return url.substring(0, indexOfDot) + url.substring(indexOfDot).split('/')[0] + '/api/v3'
+  function getDomain(githubUrl){
+	  var link = url.parse(githubUrl);
+	  return link.protocol + '//' + link.hostname + '/api/v3'
   }
   
   function getBaseUrl(clientInfo){
@@ -87,7 +87,9 @@ module.exports = function (app, addon) {
   app.get('/auth/github-enterprise',
 	addon.authenticate(),
 	function(req, res){
-      var signedRequest = req.query.signed_request;
+      // used for authentication of github enterprise setup
+	  // Takes domain and access token and authenticates the user.
+	  var signedRequest = req.query.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
       var clientDetails = {"domain": getDomain(req.query.domain), "accessToken": req.query.access_token};
