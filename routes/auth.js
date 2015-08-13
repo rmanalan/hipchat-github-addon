@@ -84,7 +84,7 @@ module.exports = function (app, addon) {
     }
   );
   
-  app.get('/auth/github-enterprise',
+  app.post('/auth/github-enterprise',
 	addon.authenticate(),
 	function(req, res){
       // used for authentication of github enterprise setup
@@ -92,7 +92,7 @@ module.exports = function (app, addon) {
 	  var signedRequest = req.query.signed_request;
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
-      var clientDetails = {"domain": getDomain(req.query.domain), "accessToken": req.query.access_token};
+      var clientDetails = {"domain": getDomain(req.body.domain), "accessToken": req.body.access_token};
       
       addon.loadClientInfo(issuer).then(function(clientInfo){
           // verify the signed request

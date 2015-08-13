@@ -66,8 +66,9 @@ app.factory('repoService',
 app.controller('MainCtrl',
     [
         '$scope',
+        '$http',
         'repoService',
-        function($scope, Repo){
+        function($scope, $http, Repo){
         	$scope.loginStatus = {"github": true}; 
         	$scope.enterpriseDetail = {};
         	$scope.error = {};
@@ -78,12 +79,21 @@ app.controller('MainCtrl',
             $scope.login = function(token){
 				var url = '/auth/github?signed_request=' + token;
 				if (! $scope.loginStatus.github){
-					url = '/auth/github-enterprise?signed_request=' + token + 
-							"&domain=" + $scope.enterpriseDetail.domain + '&access_token=' + $scope.enterpriseDetail.accessToken;
-				}
-				var newWindow = window.open(url, 'name', 'height=768,width=1024');
-				if (window.focus) {
-					newWindow.focus();
+					// Github hosted server login
+					$http({
+						url: '/auth/github-enterprise?signed_request=' + token,
+						method: 'POST',
+						data: {'domain': $scope.enterpriseDetail.domain, 'access_token': $scope.enterpriseDetail.accessToken}
+					}).
+					then(function(){
+						window.location.reload()
+					});
+				}else{
+					// Github login
+					var newWindow = window.open(url, 'name', 'height=768,width=1024');
+					if (window.focus) {
+						newWindow.focus();
+					}
 				}
 				return false;
             }
