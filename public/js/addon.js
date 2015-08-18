@@ -66,21 +66,52 @@ app.factory('repoService',
 app.controller('MainCtrl',
     [
         '$scope',
+        '$http',
         'repoService',
-        function($scope, Repo){
-            $scope.error = {};
+        function($scope, $http, Repo){
+        	$scope.loginStatus = {"github": true}; 
+        	$scope.enterpriseDetail = {};
+        	$scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
             dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
-
+                        
             $scope.login = function(token){
-                var newWindow = window.open('/auth/github?signed_request=' + token, 'name', 'height=768,width=1024');
-                if (window.focus) {
-                    newWindow.focus();
-                }
-                return false;
+				var url = '/auth/github?signed_request=' + token;
+				if (! $scope.loginStatus.github){
+					// Github hosted server login
+					$http({
+						url: '/auth/github-enterprise?signed_request=' + token,
+						method: 'POST',
+						data: {'domain': $scope.enterpriseDetail.domain, 'access_token': $scope.enterpriseDetail.accessToken}
+					}).
+					then(function(){
+						window.location.reload()
+					});
+				}else{
+					// Github login
+					var newWindow = window.open(url, 'name', 'height=768,width=1024');
+					if (window.focus) {
+						newWindow.focus();
+					}
+				}
+				return false;
             }
-
+            
+            $scope.notAbleTofindRepo = function(error){
+            	if(error){
+            		$scope.loginStatus.github = false;
+            	}
+            }
+            
+            $scope.enterpriseLogin = function(){
+            	$scope.loginStatus.github = true;
+            }
+            
+            $scope.getLogin = function(){
+            	$scope.loginStatus.github = false;
+            }
+            
             $scope.repoNameValid = function(repoName){
                 return /\//.test(repoName);
             }
@@ -101,6 +132,10 @@ app.controller('MainCtrl',
                     angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 });
                 return false;
+            }
+            
+            $scope.removeWarning = function(){
+            	angular.element(document.querySelector('.close-warning')).parent().remove();
             }
 
             $scope.updateSubscription = function(repo){
