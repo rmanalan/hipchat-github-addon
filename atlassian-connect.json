@@ -1,28 +1,62 @@
 {
-    "key": "github-for-hipchat",
-    "name": "GitHub",
-    "description": "Bring GitHub into your HipChat rooms and get notified about your team's commits, pull requests, issues, comments, and more.",
-    "vendor": {
-        "name": "HipChat",
-        "url": "https://www.hipchat.com"
+  "key": "github-for-hipchat-{{environment}}",
+  "name": "GitHub",
+  "description": "Bring GitHub into your HipChat rooms and get notified about your team's commits, pull requests, issues, comments, and more.",
+  "vendor": {
+    "name": "HipChat",
+    "url": "https://www.hipchat.com"
+  },
+  "links": {
+    "self": "{{localBaseUrl}}/atlassian-connect.json",
+    "homepage": "https://bitbucket.org/hipchat/hipchat-github-addon"
+  },
+  "capabilities": {
+    "hipchatApiConsumer": {
+      "scopes": [
+        "send_notification"
+      ]
     },
-    "links": {
-        "self": "{{localBaseUrl}}/atlassian-connect.json",
-        "homepage": "https://bitbucket.org/hipchat/hipchat-github-addon"
+    "installable": {
+      "callbackUrl": "{{localBaseUrl}}/installable",
+      "allowRoom": true,
+      "allowGlobal": false
     },
-    "capabilities": {
-        "hipchatApiConsumer": {
-            "scopes": [
-                "send_notification"
-            ]
+    "configurable": {
+      "url": "{{localBaseUrl}}/config"
+    },
+    "dialog": [
+      {
+        "key": "github.configure.dialog",
+        "title": {
+          "value": "Configure GitHub"
         },
-        "installable": {
-            "callbackUrl": "{{localBaseUrl}}/installable",
-            "allowRoom": true,
-            "allowGlobal": false
+        "url": "{{localBaseUrl}}/config"
+      }
+    ],
+    "action": [
+      {
+        "key": "github.add.repo",
+        "name": {
+          "value": "Subscribe to this repository"
         },
-        "configurable": {
-             "url": "{{localBaseUrl}}/config"
-        }
-    }
+        "target": {
+          "key": "github.configure.dialog"
+        },
+        "location": "hipchat.message.action",
+        "conditions": [
+          {
+            "condition": "message_matches",
+            "params": {
+              "regex": {
+                "pattern": "(https?:\/\/)?github.com\/[\w.\-_]+\/[\w.\-_]+\/?",
+                "flags": "gmi"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+
 }
+

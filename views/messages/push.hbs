@@ -1,8 +1,20 @@
-<a href="{{pusher.html_url}}">{{pusher.name}}</a> pushed <a href="{{compare}}">{{commitsLength}} {{pluralize commits.length 'commit' 'commits'}}</a> to <a href="{{repository.url}}">{{repository.name}}</a>:{{extractBranch ref}}<br>
-{{#each commits}}
-- {{this.message}} / by {{this.author.username}} <a href="{{this.url}}">{{trim this.id}}</a><br>
-{{else}}
-{{/each}}
-{{#if commitsLengthMore}}
-<a href="{{compare}}">See more</a>
-{{/if}}
+
+{
+  "style": "application",
+  "url": "{{compare}}",
+  "id": "{{after}}",
+  "title": "{{repository.full_name}}",
+  "description": {{#escapeQuotes}}{{#summarizeBlock}}{{#each commits}}✓ {{nonewlines this.message}} / by {{this.author.username}} <a href="{{this.url}}">{{trim this.id}}</a><br>\n{{else}}\n{{/each}}\n{{#if commitsLengthMore}}\n<a href="{{compare}}">See more</a>\n{{/if}}{{/summarizeBlock}}{{/escapeQuotes}},
+  "original_html": {{#escapeQuotes}}<a href="{{sender.html_url}}">{{pusher.name}}</a> pushed <a href="{{compare}}">{{commitsLength}} {{pluralize commits.length 'commit' 'commits'}}</a> to <a href="{{repository.url}}">{{repository.name}}</a>:{{extractBranch ref}}<br>\n{{#each commits}}\n- {{nonewlines this.message}} / by {{this.author.username}} <a href="{{this.url}}">{{trim this.id}}</a><br>\n{{else}}\n{{/each}}\n{{#if commitsLengthMore}}\n<a href="{{compare}}">See more</a>\n{{/if}}{{/escapeQuotes}},
+  "icon": {
+    "url": "{{localBaseUrl}}/images/GitHub-Mark-64px.png",
+    "url@2x": "{{localBaseUrl}}/images/GitHub-Mark-120px.png"
+  },
+  "activity": {
+    "icon": "{{sender.avatar_url}}",
+    "html": {{#escapeQuotes}}<a href="{{sender.html_url}}"><strong>{{pusher.name}}</strong></a> pushed <a href="{{compare}}"><strong>{{commitsLength}} {{pluralize commits.length 'commit' 'commits'}}</strong></a> to <strong><a href="{{repository.url}}">{{repository.name}}</a>:{{extractBranch ref}}</strong>{{/escapeQuotes}}
+  },
+  "metadata": {
+    "repository_id": "{{repository.id}}"
+  }
+}

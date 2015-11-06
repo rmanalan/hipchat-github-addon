@@ -1,2 +1,20 @@
-<a href="{{comment.user.html_url}}">{{comment.user.login}}</a> commented on <a href="{{comment.html_url}}">{{comment.path}}</a> in a <a href="{{comment.html_url}}">pull request</a> for <a href="{{repository.html_url}}">{{repository.full_name}}</a>
-{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}
+{
+  "style": "application",
+  "url": "{{issue.url}}",
+  "id": "{{issue.id}}",
+  "title": "{{issue.title}}",
+  "description": "{{summarize comment.body}}",
+  "original_html": "<a href=\"{{comment.user.html_url}}\">{{comment.user.login}}</a> commented on <a href=\"{{comment.html_url}}\">{{comment.path}}</a> in a <a href=\"{{comment.html_url}}\">pull request</a> for <a href=\"{{repository.html_url}}\">{{repository.full_name}}</a>\\n{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}",
+  "icon": {
+    "url": "{{localBaseUrl}}/images/GitHub-Mark-64px.png",
+    "url@2x": "{{localBaseUrl}}/images/GitHub-Mark-120px.png"
+  },
+  "activity": {
+    "icon": "{{comment.user.avatar_url}}",
+    "html": "<a href=\"{{comment.user.html_url}}\">{{comment.user.login}}</a> commented on <a href=\"{{comment.html_url}}\">{{comment.path}}</a> in a <a href=\"{{comment.html_url}}\">pull request</a> for <a href=\"{{repository.html_url}}\">{{repository.full_name}}</a>"
+  },
+  "metadata": {
+    "repository_id": "{{repository.id}}",
+    "url": "{{issue.url}}"
+  }
+}

@@ -1,4 +1,6 @@
-require('newrelic');
+if (process.env['NODE_ENV'] == 'production') {
+  require('newrelic');
+}
 var express = require('express');
 var ac = require('atlassian-connect-express');
 process.env.PWD = process.env.PWD || process.cwd(); // Fix expiry on Windows :(

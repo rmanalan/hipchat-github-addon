@@ -1,1 +1,39 @@
-<a href="{{sender.html_url}}">{{sender.login}}</a> starred <a href="{{repository.html_url}}">{{repository.full_name}}</a> ★ {{repository.stargazers_count}}
+{
+  "style": "application",
+  "url": "{{repository.html_url}}",
+  "id": "{{repository.id}}",
+  "title": "{{repository.full_name}}",
+  "description": "{{repository.description}}",
+  "original_html": "<strong><a href=\"{{sender.html_url}}\">{{sender.login}}</a></strong> starred <strong><a href=\"{{repository.html_url}}\">{{repository.full_name}}</a></strong>",
+  "icon": {
+    "url": "{{localBaseUrl}}/images/GitHub-Mark-32px.png",
+    "url@2x": "{{localBaseUrl}}/images/GitHub-Mark-64px.png"
+  },
+  "attributes": [
+    {
+      "label": "Watchers",
+      "value": {
+        "label": "{{repository.watchers_count}}"
+      }
+    },
+    {
+      "label": "Stars",
+      "value": {
+        "label": "{{repository.stargazers_count}}"
+      }
+    },
+    {
+      "label": "Forks",
+      "value": {
+        "label": "{{repository.forks}}"
+      }
+    }
+  ],
+  "activity": {
+    "icon": "{{sender.avatar_url}}",
+    "html": "<strong><a href=\"{{sender.html_url}}\">{{sender.login}}</a></strong> starred <strong><a href=\"{{repository.html_url}}\">{{repository.full_name}}</a></strong>"
+  },
+  "metadata": {
+    "repository_id": "{{repository.id}}"
+  }
+}

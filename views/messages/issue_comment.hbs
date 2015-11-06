@@ -1,2 +1,20 @@
-<a href="{{comment.user.html_url}}">{{comment.user.login}}</a> {{action}} a <a href="{{comment.html_url}}">comment</a> on issue #<a href="{{issue.html_url}}">{{issue.number}}</a> for <a href="{{repository.html_url}}">{{repository.full_name}}</a>: <a href="{{issue.html_url}}"><b>Re: {{issue.title}}</b></a><br>
-{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}
+{
+  "style": "application",
+  "url": "{{issue.html_url}}",
+  "id": "{{issue.id}}",
+  "title": "{{issue.title}}",
+  "description": "{{summarize comment.body}}",
+  "original_html": "<a href=\"{{comment.user.html_url}}\">{{comment.user.login}}</a> {{action}} a <a href=\"{{comment.html_url}}\">comment</a> on issue #<a href=\"{{issue.html_url}}\">{{issue.number}}</a> for <a href=\"{{repository.html_url}}\">{{repository.full_name}}</a>: <a href=\"{{issue.html_url}}\"><b>Re: {{issue.title}}</b></a><br>\\n{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}",
+  "icon": {
+    "url": "{{localBaseUrl}}/images/GitHub-Mark-64px.png",
+    "url@2x": "{{localBaseUrl}}/images/GitHub-Mark-120px.png"
+  },
+  "activity": {
+    "icon": "{{comment.user.avatar_url}}",
+    "html": "<a href=\"{{comment.user.html_url}}\"><b>{{comment.user.login}}</b></a> {{action}} a <a href=\"{{comment.html_url}}\"><b>comment</b></a> on issue #<a href=\"{{issue.html_url}}\"><b>{{issue.number}}</b></a> for <a href=\"{{repository.html_url}}\"><b>{{repository.full_name}}</b></a>: <a href=\"{{issue.html_url}}\"><b>Re: {{issue.title}}</b></a>"
+  },
+  "metadata": {
+    "repository_id": "{{repository.id}}",
+    "url": "{{issue.url}}"
+  }
+}

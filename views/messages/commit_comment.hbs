@@ -1,2 +1,19 @@
-<a href="{{comment.user.html_url}}">{{comment.user.login}}</a> commented on {{comment.path}} (<a href="{{comment.html_url}}">{{trim comment.commit_id}}</a>) for {{repository.full_name}}
-{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}
+{
+  "style": "application",
+  "url": "{{comment.html_url}}",
+  "id": "{{comment.id}}",
+  "title": "{{repository.full_name}}",
+  "description": "{{#escapeQuotes}}{{#summarizeBlock}}{{nonewlines comment.body}}{{/summarizeBlock}}{{/escapeQuotes}}",
+  "original_html": "{{#escapeQuotes}}<a href=\"{{comment.user.html_url}}\">{{comment.user.login}}</a> commented on {{comment.path}} (<a href=\"{{comment.html_url}}\">{{trim comment.commit_id}}</a>) in {{repository.full_name}}\n\n{{#if comment.body}}<pre>{{summarize comment.body}}</pre>{{/if}}{{/escapeQuotes}}",
+  "icon": {
+    "url": "{{localBaseUrl}}/images/GitHub-Mark-64px.png",
+    "url@2x": "{{localBaseUrl}}/images/GitHub-Mark-120px.png"
+  },
+  "activity": {
+    "icon": "{{sender.avatar_url}}",
+    "html": "{{#escapeQuotes}}<a href=\"{{comment.user.html_url}}\"><strong>{{comment.user.login}}</strong></a> commented on <strong>{{comment.path}}</strong> (<a href=\"{{comment.html_url}}\">{{trim comment.commit_id}}</a>) in <a href=\"{{repository.html_url}}\"><strong>{{repository.full_name}}</strong></a>{{/escapeQuotes}}"
+  },
+  "metadata": {
+    "repository_id": "{{repository.id}}"
+  }
+}

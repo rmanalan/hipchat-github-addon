@@ -1,26 +1,19 @@
 var RSVP = require('rsvp');
 var http = require('request');
-var render = require('../lib/messageRenderer')({
-  templateDir: "./views/messages"
-});
 
 module.exports = function (app, addon) {
+  var render = require('../lib/messageRenderer')({
+    templateDir: "./views/messages",
+    localBaseUrl: addon.config.localBaseUrl()
+  });
   var passport = addon.passport;
   var config = require('./config')(app, addon);
   var hipchat = require('../lib/hipchat')(addon);
   var github = require('../lib/github')(addon);
 
   app.get('/',
-
     function(req, res) {
-      res.format({
-        'text/html': function () {
-          res.redirect(addon.descriptor.links.homepage);
-        },
-        'application/json': function () {
-          res.redirect('/atlassian-connect.json');
-        }
-      });
+      res.redirect('/atlassian-connect.json');
     }
   );
 
