@@ -1,6 +1,5 @@
 /* add-on script */
 var dialog;
-var HipChat = AP;
 HipChat.require('env', function(env){
     dialog = env;
     dialog.resize();
