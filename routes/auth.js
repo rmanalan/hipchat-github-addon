@@ -156,7 +156,7 @@ module.exports = function (app, addon) {
         	  setGithubUserId(req.query.signed_request, body.id);
         	  return next();
     	  }
-          if (req.clientInfo.githubUserId && req.clientInfo.githubUserId === body.id) {
+          if (req.clientInfo.githubUserId && parseInt(req.clientInfo.githubUserId) === parseInt(body.id)) {
             return next();
           } else {
             res.render('login', param);
