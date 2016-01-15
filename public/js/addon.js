@@ -1,5 +1,6 @@
 /* add-on script */
 var dialog;
+var HipChat = AP;
 HipChat.require('env', function(env){
     dialog = env;
     dialog.resize();
@@ -69,13 +70,13 @@ app.controller('MainCtrl',
         '$http',
         'repoService',
         function($scope, $http, Repo){
-        	$scope.loginStatus = {"github": true}; 
+        	$scope.loginStatus = {"github": true};
         	$scope.enterpriseDetail = {};
         	$scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
             dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
-                        
+
             $scope.login = function(token){
 				var url = '/auth/github?signed_request=' + token;
 				if (! $scope.loginStatus.github){
@@ -97,21 +98,21 @@ app.controller('MainCtrl',
 				}
 				return false;
             }
-            
+
             $scope.notAbleTofindRepo = function(error){
             	if(error){
             		$scope.loginStatus.github = false;
             	}
             }
-            
+
             $scope.enterpriseLogin = function(){
             	$scope.loginStatus.github = true;
             }
-            
+
             $scope.getLogin = function(){
             	$scope.loginStatus.github = false;
             }
-            
+
             $scope.repoNameValid = function(repoName){
                 return /\//.test(repoName);
             }
@@ -133,7 +134,7 @@ app.controller('MainCtrl',
                 });
                 return false;
             }
-            
+
             $scope.removeWarning = function(){
             	angular.element(document.querySelector('.close-warning')).parent().remove();
             }
