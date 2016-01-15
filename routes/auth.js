@@ -13,20 +13,20 @@ module.exports = function (app, addon) {
   function authWithQueryAsState(req, res, next) {
     addon.passport.authenticate('github',{ session: false, scope: ['repo'], state: qs.stringify(req.query) })(req, res, next);
   }
-  
+
   function getDomain(githubUrl){
 	  var link = url.parse(githubUrl);
 	  return link.protocol + '//' + link.hostname + '/api/v3'
   }
-  
+
   function getBaseUrl(clientInfo){
 	  var baseUrl = addon.API_BASE_URI;
 	  if(clientInfo.baseUrl){
 		  baseUrl = clientInfo.baseUrl;
 	  }
 	  return baseUrl;
-  } 
-  
+  }
+
   function setGithubUserId(signedRequest, userId){
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
@@ -83,7 +83,7 @@ module.exports = function (app, addon) {
       });
     }
   );
-  
+
   app.post('/auth/github-enterprise',
 	addon.authenticate(),
 	function(req, res){
@@ -93,7 +93,7 @@ module.exports = function (app, addon) {
       var unverifiedClaims = jwt.decode(signedRequest, null, true);
       var issuer = unverifiedClaims.iss;
       var clientDetails = {"domain": getDomain(req.body.domain), "accessToken": req.body.access_token};
-      
+
       addon.loadClientInfo(issuer).then(function(clientInfo){
           // verify the signed request
           if (clientInfo === null) {
@@ -118,7 +118,7 @@ module.exports = function (app, addon) {
               return;
             }
           }
-          
+
           clientInfo.githubAccessToken = clientDetails['accessToken'];
           clientInfo.baseUrl = clientDetails['domain'];
           addon.settings.set('clientInfo', clientInfo, issuer).then(function(clientInfo){
@@ -127,10 +127,10 @@ module.exports = function (app, addon) {
 
         }, function(err) {
           return send(400, err.message);
-        });      
+        });
    	}
   );
-  
+
 
   return {
     ensureAuthenticated: function() {
@@ -147,7 +147,8 @@ module.exports = function (app, addon) {
           if(req.clientInfo.baseUrl && (req.clientInfo.baseUrl != addon.API_BASE_URI)){
       		param["error"] = true
       	  }
-          if(err){  
+          if(err){
+            console.error(err);
             res.render('login', param);
             return;
           }
