@@ -9,6 +9,18 @@
       "url": "redis://localhost:6379"
     }
   },
+  "staging": {
+    "usePublicKey": false,
+    "port": "$PORT",
+    "localBaseUrl": "https://hipchat-github-staging.herokuapp.com",
+    "store": {
+      "adapter": "redis",
+      "url": "$DATABASE_URL"
+    },
+    "whitelist": [
+      "*.hipchat.com"
+    ]
+  },
   "production": {
     "usePublicKey": false,
     "port": "$PORT",
