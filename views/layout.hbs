@@ -6,12 +6,14 @@
   <meta name="ap-local-base-url" content="{{localBaseUrl}}">
   <meta name="acpt" content="{{signed_request}}">
   <title>{{title}}</title>
-  <link rel="stylesheet" href="{{hostStylesheetUrl}}"></head>
+  <link rel="stylesheet" href="{{hostStylesheetUrl}}">
       <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.8.0/css/aui.css" media="all">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/aui/5.4.3/aui/css/aui-experimental.css" media="all">
   <!--[if lt IE 9]><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/aui/5.4.3/aui/css/aui-ie.css" media="all"><![endif]-->
   <!--[if IE 9]><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/aui/5.4.3/aui/css/aui-ie9.css" media="all"><![endif]-->
   <link rel="stylesheet" href="{{furl '/css/addon.css'}}" type="text/css" />
+  <script src="{{furl '/js/iframe.min.js'}}"></script>
+</head>
 <body class="aui-page-hybrid addon" ng-controller="MainCtrl">
   <section id="content" role="main" class="ac-content">
     {{{body}}}
@@ -25,7 +27,6 @@
   {{! <script src="//cdnjs.cloudflare.com/ajax/libs/aui/5.4.3/aui/js/aui.js"></script> }}
   {{! <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/aui/5.4.3/aui/js/aui-ie.js"></script><![endif]--> }}
   <!--<script src="{{hostScriptUrl}}"></script>-->
-  <script src="{{furl '/js/iframe.min.js'}}"></script>
   <script src="{{furl '/js/addon.js'}}"></script>
 </body>
 </html>
