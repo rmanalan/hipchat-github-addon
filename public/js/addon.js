@@ -1,9 +1,9 @@
 /* add-on script */
-var dialog;
-AP.require('env', function(env){
-    dialog = env;
-    dialog.resize();
-});
+// var dialog;
+// AP.require('env', function(env){
+//     dialog = env;
+//     dialog.resize();
+// });
 
 var app = angular.module('GitHub',['ngResource']);
 
@@ -74,7 +74,7 @@ app.controller('MainCtrl',
         	$scope.error = {};
             $scope.repoName = '';
             $scope.subscribedRepos = Repo.all();
-            dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
+            // dialog.resize('100%', '1000px'); // 1000px hack is because we're in a dialog
 
             $scope.login = function(token){
 				var url = '/auth/github?signed_request=' + token;
@@ -124,7 +124,7 @@ app.controller('MainCtrl',
                 subscription.$save().then(function(repo){
                     $scope.repoName = '';
                     $scope.subscribedRepos.push(repo);
-                    dialog.resize('100%', '1000px');
+                    // dialog.resize('100%', '1000px');
                     angular.element(document.querySelector('#add-repo')).addClass('aui-iconfont-add').removeClass('aui-icon-wait');
                 }).catch(function(err){
                     $scope.error.title = err.data.title || 'Repository error';
@@ -147,7 +147,7 @@ app.controller('MainCtrl',
                 $scope.error = {};
                 var idx = $scope.subscribedRepos.map(function(a) { return a.id; }).indexOf(this.repo.id);
                 $scope.subscribedRepos.splice(idx, 1);
-                dialog.resize();
+                // dialog.resize();
                 Repo.remove({id: this.repo.id});
             }
 
@@ -155,14 +155,14 @@ app.controller('MainCtrl',
                 $scope.error = {};
                 angular.element(document.querySelectorAll('.repo-config')).addClass('hidden');
                 angular.element(document.querySelector('#repo-config-'+this.$index)).removeClass('hidden');
-                dialog.resize('100%', '1000px');
+                // dialog.resize('100%', '1000px');
                 return false;
             }
 
             $scope.hideConfig = function(){
                 $scope.error = {};
                 angular.element(document.querySelector('#repo-config-'+this.$index)).addClass('hidden');
-                dialog.resize();
+                // dialog.resize();
                 return false;
             }
 
