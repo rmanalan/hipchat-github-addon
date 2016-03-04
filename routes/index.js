@@ -147,7 +147,7 @@ module.exports = function (app, addon) {
   });
 
   app.get('/redirect_to_install', function(req, res){
-      res.redirect('https://www.hipchat.com/addon/install?url=' + addon.config.localBaseUrl());
+      res.redirect('https://www.hipchat.com/addons/install?url=' + addon.config.localBaseUrl());
   });
 
   // Notify the room that the add-on was installed
