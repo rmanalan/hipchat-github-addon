@@ -146,6 +146,10 @@ module.exports = function (app, addon) {
       });
   });
 
+  app.get('/redirect_to_install', function(req, res){
+      res.redirect('https://www.hipchat.com/addon/install?url=' + addon.config.localBaseUrl());
+  });
+
   // Notify the room that the add-on was installed
   addon.on('installed', function(clientKey, clientInfo, req){
     hipchat.sendMessage(clientInfo, req.body.roomId, 'The ' + addon.descriptor.name + ' add-on has been installed in this room');
