@@ -14,7 +14,7 @@
     "env": {
         "AC_LOCAL_BASE_URL": {
             "description": "The base URL where this add-on will be hosted",
-            "generator": "https://",
+            "value": "https://",
             "required": true
         },
         "GH_ID": {
