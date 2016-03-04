@@ -1,4 +1,6 @@
-require('newrelic');
+if (process.env.NEW_RELIC_LICENSE_KEY) {
+    require('newrelic');
+}
 var express = require('express');
 var ac = require('atlassian-connect-express');
 process.env.PWD = process.env.PWD || process.cwd(); // Fix expiry on Windows :(
