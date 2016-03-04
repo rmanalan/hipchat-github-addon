@@ -15,7 +15,7 @@
     "localBaseUrl": "https://hipchat-github-staging.herokuapp.com",
     "store": {
       "adapter": "redis",
-      "url": "$DATABASE_URL"
+      "url": "$REDISCLOUD_URL"
     },
     "whitelist": [
       "*.hipchat.com"
@@ -27,7 +27,7 @@
     "localBaseUrl": "https://github.hipch.at",
     "store": {
       "adapter": "redis",
-      "url": "$DATABASE_URL"
+      "url": "$REDISCLOUD_URL"
     },
     "whitelist": [
       "*.hipchat.com"

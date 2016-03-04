@@ -1,0 +1,34 @@
+{
+    "name": "GitHub for HipChat",
+    "description": "Bring GitHub into your HipChat rooms and get notified about your team's commits, pull requests, issues, comments, and more.",
+    "keywords": [
+        "github",
+        "hipchat",
+        "atlassian",
+        "bitbucket"
+    ],
+    "website": "https://marketplace.atlassian.com/plugins/github-for-hipchat/cloud/overview",
+    "repository": "https://bitbucket.org/hipchat/hipchat-github-addon",
+    "logo": "https://bytebucket.org/hipchat/hipchat-github-addon/raw/b4c9fc3dbd285ad37bc1c322398b54e46cb57521/public/images/Octocat.png",
+    "success_url": "/redirect_to_install",
+    "env": {
+        "AC_LOCAL_BASE_URL": {
+            "description": "The base URL where this add-on will be hosted",
+            "generator": "https://",
+            "required": true
+        },
+        "GH_ID": {
+            "description": "GitHub Client ID. Register an application at https://github.com/settings/applications/new",
+            "value": "",
+            "required": true
+        },
+        "GH_SECRET": {
+            "description": "Github Client Secret. Register an application at https://github.com/settings/applications/new",
+            "value": "",
+            "required": true
+        }
+    },
+    "addons": [
+        "rediscloud"
+    ]
+}
